@@ -1,0 +1,13 @@
+[Unit]
+Description=Consul
+Documentation=https://www.consul.io/
+After=network.target
+
+[Service]
+ExecStart=/usr/local/bin/consul agent -config-dir=/etc/consul.d/
+Restart=on-failure
+ExecReload=/bin/kill -HUP $MAINPID
+KillSignal=SIGTERM
+
+[Install]
+WantedBy=multi-user.target

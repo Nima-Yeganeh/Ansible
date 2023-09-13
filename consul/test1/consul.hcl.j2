@@ -1,0 +1,7 @@
+datacenter = "dc1"
+data_dir = "/opt/consul/data"
+bind_addr = "{{ ansible_default_ipv4.address }}"
+advertise_addr = "{{ ansible_default_ipv4.address }}"
+client_addr = "0.0.0.0"
+
+retry_join = ["{{ ansible_default_ipv4.address }}"]

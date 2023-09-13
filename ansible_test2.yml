@@ -1,0 +1,9 @@
+---
+- name: create a file
+  hosts: localhost
+  become: yes
+  tasks:
+    - name: remove the test file
+      file:
+        path: /test.txt
+        state: absent
