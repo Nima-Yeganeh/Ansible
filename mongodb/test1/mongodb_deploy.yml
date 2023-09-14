@@ -12,13 +12,26 @@
     mongodb_replica_set_name: "myreplica"
 
   tasks:
-    - name: Update APT Cache
+    - name: Set Hostname
+      hostname:
+        name: "{{ desired_hostname }}"
+
+    - name: Update Package Cache
       apt:
         update_cache: yes
+      when: ansible_os_family == "Ubuntu"
+
+    - name: Install Required Packages
+      apt:
+        name:
+          - unzip
+          - curl
+          - wget
+      when: ansible_os_family == "Ubuntu"
 
     - name: Install MongoDB
       apt:
-        name: mongodb-server
+        name: mongodb-org
         state: present
         update_cache: yes
       vars:

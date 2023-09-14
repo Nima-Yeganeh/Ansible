@@ -18,7 +18,7 @@
         name:
           - unzip
           - curl
-      when: ansible_os_family == "Debian"
+      when: ansible_os_family == "Ubuntu"
 
     - name: Download Consul
       get_url:
