@@ -122,16 +122,5 @@
         dest: /etc/mongodb.deploy.conf.sh
 
     - name: Initialize MongoDB Replica Set
-      ansible.builtin.shell: bash /etc/mongodb.deploy.conf.sh
-      register: command_result
+      shell: bash /etc/mongodb.deploy.conf.sh
       ignore_errors: yes
-
-    - name: Check if the task had an error
-      debug:
-        msg: "Task completed with an error: {{ command_result.stderr }}"
-      when: command_result.failed
-
-    - name: Display the command's output
-      debug:
-        msg: "Command output: {{ command_result.stdout }}"
-      when: not command_result.failed

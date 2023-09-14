@@ -11,7 +11,7 @@
     mongodb_port: 27017
     mongodb_replica_set_name: "myreplica"
 
-  tasks: 
+  tasks:
     - name: Initialize MongoDB Replica Set
       ansible.builtin.shell: bash /etc/mongodb.deploy.conf.sh
       register: command_result
