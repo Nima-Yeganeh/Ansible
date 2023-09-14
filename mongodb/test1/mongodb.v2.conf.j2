@@ -1,0 +1,18 @@
+storage:
+  dbPath: "{{ mongodb_data_dir }}"
+  journal:
+    enabled: true
+  wiredTiger:
+    engineConfig:
+      cacheSizeGB: 1
+
+net:
+  bindIp: "{{ mongodb_bind_ip }}"
+  port: {{ mongodb_port }}
+
+replication:
+  replSetName: "{{ mongodb_replica_set_name }}"
+
+security:
+  authorization: enabled
+  keyFile: "/etc/mongod-keyfile"

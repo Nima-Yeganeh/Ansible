@@ -16,6 +16,16 @@
         dest: /etc/mongodb-keyfile
         mode: '0600' # Set the file permissions to be secure (rw-------)
 
+    - name: Configure MongoDB Security
+      template:
+        src: mongodb.v2.conf.j2
+        dest: /etc/mongod.conf
+
+    - name: Restart MongoDB Service
+      service:
+        name: mongod
+        state: restarted
+
     - name: Install UFW
       ansible.builtin.apt:
         name: ufw
