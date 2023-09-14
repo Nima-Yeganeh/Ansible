@@ -4,5 +4,10 @@
   # become: yes
   
   tasks:
-    - name: MongoDB Status Check
-      shell: mongosh --eval 'rs.status()' | grep -E 'set|state|uptime|ok|cluster|name'
+    - name: Get MongoDB RS Status
+      command: mongosh --eval 'rs.status()' | grep -E 'set|state|uptime|ok|cluster|name'
+      register: command_result_output
+
+    - name: Display MongoDB RS Status
+      debug:
+        var: command_result_output.stdout_lines
