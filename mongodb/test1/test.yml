@@ -13,5 +13,5 @@
 
   tasks: 
     - name: Initialize MongoDB Replica Set
-      shell: bash /etc/mongodb.deploy.conf.sh
+      shell: bash /etc/mongodb.deploy.conf.sh && true
       ignore_errors: yes
