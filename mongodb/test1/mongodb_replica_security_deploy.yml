@@ -1,0 +1,49 @@
+---
+- name: MongoDB Replica Security Deploy
+  hosts: servers
+  become: yes
+
+  tasks:
+    - name: Update Apt Package Cache
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: Install UFW
+      ansible.builtin.apt:
+        name: ufw
+        state: present
+
+    - name: Allow SSH through UFW
+      ansible.builtin.ufw:
+        rule: allow
+        port: 22
+
+    - name: Allow Host1 to connect to port 27017
+      ansible.builtin.ufw:
+        rule: allow
+        from_ip: "{{ hostvars['host1'].ansible_default_ipv4.address }}"
+        port: 27017
+
+    - name: Allow Host2 to connect to port 27017
+      ansible.builtin.ufw:
+        rule: allow
+        from_ip: "{{ hostvars['host2'].ansible_default_ipv4.address }}"
+        port: 27017
+
+    - name: Allow Host3 to connect to port 27017
+      ansible.builtin.ufw:
+        rule: allow
+        from_ip: "{{ hostvars['host3'].ansible_default_ipv4.address }}"
+        port: 27017
+
+    - name: Set the default incoming rule to deny
+      ansible.builtin.ufw:
+        rule: deny incoming
+
+    - name: Enable UFW
+      ansible.builtin.ufw:
+        state: enabled
+
+    - name: Reload UFW
+      ansible.builtin.ufw:
+        state: reloaded
