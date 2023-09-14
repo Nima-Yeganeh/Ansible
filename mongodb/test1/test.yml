@@ -13,5 +13,12 @@
 
   tasks: 
     - name: Initialize MongoDB Replica Set
-      shell: bash /etc/mongodb.deploy.conf.sh && true
+      ansible.builtin.shell: bash /etc/mongodb.deploy.conf.sh
+      register: command_result
       ignore_errors: yes
+      failed_when: "'MongoServerError: already initialized' not in command_result.stdout"
+
+    - name: Check if the task was successful
+      debug:
+        msg: "Task was successful"
+      when: "'MongoServerError: already initialized' in command_result.stdout"
