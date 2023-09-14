@@ -5,7 +5,7 @@
   
   tasks:
     - name: Get MongoDB RS Status
-      command: mongosh --eval 'rs.status()' | grep -E 'set|state|uptime|ok|cluster|name'
+      ansible.builtin.shell: mongosh --eval 'rs.status()' | grep -E 'set|state|uptime|ok|cluster|name'
       register: command_result_output
 
     - name: Display MongoDB RS Status
