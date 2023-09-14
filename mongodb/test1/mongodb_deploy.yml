@@ -35,6 +35,9 @@
         state: present
       when: ansible_os_family == "Ubuntu"
 
+    - name: Run the rm command to delete the MongoDB GPG key
+      command: rm -f /etc/apt/trusted.gpg.d/mongodb-6.gpg
+
     - name: Download MongoDB GPG Key
       # shell: wget -qO - https://www.mongodb.org/static/pgp/server-5.0.asc | sudo apt-key add -
       ansible.builtin.shell: curl -fsSL https://www.mongodb.org/static/pgp/server-6.0.asc|sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/mongodb-6.gpg
