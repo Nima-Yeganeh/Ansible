@@ -16,10 +16,10 @@
         dest: /etc/mongodb-keyfile
         mode: '0600' # Set the file permissions to be secure (rw-------)
 
-    - name: Configure MongoDB Security
-      template:
-        src: mongodb.security.conf.j2
-        dest: /etc/mongod.conf
+#    - name: Configure MongoDB Security
+#      template:
+#        src: mongodb.security.conf.j2
+#        dest: /etc/mongod.conf
 
     - name: Restart MongoDB Service
       service:
