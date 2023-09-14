@@ -36,10 +36,10 @@
         from_ip: "{{ hostvars['host3'].ansible_default_ipv4.address }}"
         port: 27017
 
-    - name: Set the default incoming rule to deny
+    - name: Set the default incoming policy to deny all
       ansible.builtin.ufw:
-        rule: deny incoming
-
+        policy: deny
+  
     - name: Enable UFW
       ansible.builtin.ufw:
         state: enabled
