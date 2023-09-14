@@ -11,3 +11,4 @@ cat /etc/ansible/hosts
 ansible -m yum -b -a 'name=mysql state=latest' SEREVR
 rpm -qa | grep mariadb
 ansible -m yum -b -a 'name=mysql state=absent' SERVER
+
