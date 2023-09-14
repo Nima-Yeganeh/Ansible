@@ -1,0 +1,55 @@
+---
+- name: Setup MongoDB Cluster
+  hosts: servers
+  become: yes
+  
+  vars:
+    mongodb_version: "5.0"
+    mongodb_data_dir: "/var/lib/mongodb"
+    mongodb_log_dir: "/var/log/mongodb"
+    mongodb_bind_ip: "0.0.0.0"
+    mongodb_port: 27017
+    mongodb_replica_set_name: "myreplica"
+
+  tasks:
+    - name: Install MongoDB
+      apt:
+        name: mongodb-org
+        state: present
+        update_cache: yes
+      vars:
+        mongodb_version: "{{ mongodb_version }}"
+      when: ansible_os_family == "Ubuntu"
+
+    - name: Start MongoDB Service
+      service:
+        name: mongod
+        state: started
+        enabled: yes
+
+    - name: Configure MongoDB
+      template:
+        src: mongodb.conf.j2
+        dest: /etc/mongod.conf
+      notify: Reload MongoDB
+
+    - name: Initialize MongoDB Replica Set
+      shell: |
+        mongo --eval 'rs.initiate(
+          {
+            _id: "{{ mongodb_replica_set_name }}",
+            members: [
+              { _id: 0, host: "host1:{{ mongodb_port }}", priority: 2 },
+              { _id: 1, host: "host2:{{ mongodb_port }}", priority: 1 },
+              { _id: 2, host: "host3:{{ mongodb_port }}", arbiterOnly: true }
+            ]
+          }
+        )'
+      ignore_errors: yes
+
+  handlers:
+    - name: Reload MongoDB
+      service:
+        name: mongod
+        state: reloaded
+
