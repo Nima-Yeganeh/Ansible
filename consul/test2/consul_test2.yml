@@ -44,13 +44,12 @@
       debug:
         msg: "Debugging information"
 
-    - name: Create Consul data directory
+    - name: Create Consul Data Directory
       file:
         path: /opt/consul/data
         state: directory
         owner: consul
         group: consul
-      become_user: yes
 
     - name: Create Consul configuration directory
       file:
