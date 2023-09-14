@@ -74,7 +74,11 @@
       template:
         src: mongodb.conf.j2
         dest: /etc/mongod.conf
-      notify: Reload MongoDB
+
+    - name: Restart MongoDB Service
+      service:
+        name: mongod
+        state: restarted
 
     - name: Initialize MongoDB Replica Set
       shell: |
@@ -89,9 +93,3 @@
           }
         )'
       ignore_errors: yes
-
-  handlers:
-    - name: Reload MongoDB
-      service:
-        name: mongod
-        state: reloaded
