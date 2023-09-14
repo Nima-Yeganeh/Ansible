@@ -1,0 +1,8 @@
+---
+- name: MongoDB Cluster RS Status Check
+  hosts: servers
+  # become: yes
+  
+  tasks:
+    - name: MongoDB Status Check
+      shell: mongosh --eval 'rs.status()' | grep -E 'set|state|uptime|ok|cluster|name'
