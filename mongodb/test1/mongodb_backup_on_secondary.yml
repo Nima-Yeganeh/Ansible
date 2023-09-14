@@ -14,3 +14,14 @@
 
     - name: Type 2 Backup - Run mongodump backup archive file > /home/db.archive
       ansible.builtin.shell: mongodump --host=localhost --port=27017 --archive=/home/db.archive
+
+    - name: Type 3 Backup - Run mongodump backup gzip archive file > /home/db.archive.gzip
+      ansible.builtin.shell: mongodump --host=localhost --port=27017 --archive=/home/db.archive.gzip --gzip
+
+    - name: Get MongoDB Backup Folder Status > /home
+      ansible.builtin.shell: ls -anp /home/
+      register: command_result_output
+
+    - name: Display MongoDB Backup Status
+      debug:
+        var: command_result_output.stdout_lines
