@@ -1,0 +1,13 @@
+---
+- name: Check Consul Members
+  hosts: servers
+  # become: yes
+
+  tasks:
+    - name: Get Consul Members
+      command: consul members
+      register: consul_members_output
+
+    - name: Display Consul Members
+      debug:
+        var: consul_members_output.stdout_lines
