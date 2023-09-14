@@ -4,6 +4,18 @@
   become: yes
 
   tasks:
+    - name: Update Package Cache
+      apt:
+        update_cache: yes
+
+    - name: Install Required Packages
+      apt:
+        name:
+          - zip
+          - unzip
+          - tar
+        state: present
+
     - name: Create Backup Directory
       ansible.builtin.file:
         path: /home/backup
@@ -17,6 +29,9 @@
 
     - name: Type 3 Backup - Run mongodump backup gzip archive file > /home/db.archive.gzip
       ansible.builtin.shell: mongodump --host=localhost --port=27017 --archive=/home/db.archive.gzip --gzip
+
+    - name: Type 4 Backup - Run mongodump backup tar file > /home/backup.tar.gz
+      ansible.builtin.shell: mongodump --out /home/backup && tar czvf /home/backup.tar.gz /home/backup
 
     - name: Get MongoDB Backup Folder Status > /home
       ansible.builtin.shell: ls -anp /home/
