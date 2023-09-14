@@ -18,7 +18,7 @@
 
     - name: Configure MongoDB Security
       template:
-        src: mongodb.v2.conf.j2
+        src: mongodb.security.conf.j2
         dest: /etc/mongod.conf
 
     - name: Restart MongoDB Service
