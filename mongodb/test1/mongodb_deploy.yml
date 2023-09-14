@@ -78,7 +78,7 @@
 
     - name: Initialize MongoDB Replica Set
       shell: |
-        mongo --eval 'rs.initiate(
+        mongosh --eval 'rs.initiate(
           {
             _id: "{{ mongodb_replica_set_name }}",
             members: [
