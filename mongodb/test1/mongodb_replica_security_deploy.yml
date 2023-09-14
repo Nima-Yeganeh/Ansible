@@ -47,3 +47,11 @@
     - name: Reload UFW
       ansible.builtin.ufw:
         state: reloaded
+
+    - name: Get UFW Status
+      ansible.builtin.shell: sudo ufw status numbered
+      register: command_result_output
+
+    - name: Display UFW Status
+      debug:
+        var: command_result_output.stdout_lines
