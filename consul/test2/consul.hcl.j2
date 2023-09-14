@@ -1,0 +1,14 @@
+datacenter = "dc1"
+data_dir = "/opt/consul/data"
+log_level = "INFO"
+server = true
+bootstrap_expect = 3
+bind_addr = "{{ ansible_default_ipv4.address }}"
+advertise_addr = "{{ ansible_default_ipv4.address }}"
+client_addr = "0.0.0.0"
+retry_join = ["{{ hostvars['webserver'][0].ansible_default_ipv4.address, hostvars['webserver'][1].ansible_default_ipv4.address, hostvars['webserver'][2].ansible_default_ipv4.address }}"]
+dns_config {
+  enable_truncate = true
+  only_passing = true
+}
+ui = true

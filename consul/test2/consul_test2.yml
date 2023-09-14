@@ -1,15 +1,15 @@
 ---
-- name: Deploy Consul on a single host
+- name: Deploy Consul On Multiple Hosts
   hosts: servers
   become: yes
 
   tasks:
-    - name: Update package cache
+    - name: Update Package Cache
       apt:
         update_cache: yes
       when: ansible_os_family == "Ubuntu"
 
-    - name: Install required packages
+    - name: Install Required Packages
       apt:
         name:
           - unzip
@@ -20,20 +20,17 @@
       get_url:
         url: "https://releases.hashicorp.com/consul/1.11.0/consul_1.11.0_linux_amd64.zip"
         dest: /tmp/consul.zip
-      # register: download_result
 
     - name: Extract Consul
       unarchive:
         src: /tmp/consul.zip
         dest: /usr/local/bin
         remote_src: yes
-      # when: download_result.status == 'success'
 
     - name: Create Consul Group
       group:
         name: consul
         state: present
-      # become_user: yes
 
     - name: Create Consul User
       user:
@@ -42,7 +39,6 @@
         shell: /sbin/nologin
         system: yes
         state: present
-      # become_user: yes
 
     - name: Debug
       debug:
@@ -60,26 +56,22 @@
       file:
         path: /etc/consul.d
         state: directory
-      # become_user: yes
 
-    - name: Create Consul service configuration
+    - name: Create Consul Service Configuration
       template:
         src: consul.hcl.j2
         dest: /etc/consul.d/consul.hcl
-      # become_user: yes
 
-    - name: Copy consul.service file
+    - name: Copy consul.service File
       copy:
         src: consul.service
         dest: /etc/systemd/system/consul.service
-      # become_user: yes
 
-    - name: Create Consul systemd service
+    - name: Create Consul Systemd Service
       systemd:
         name: consul
         enabled: yes
         state: started
-      # become_user: yes
 
     - name: Restart Consul Service
       systemd:
