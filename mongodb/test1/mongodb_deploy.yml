@@ -27,13 +27,21 @@
           - unzip
           - curl
           - wget
+          - gnupg2
+          - software-properties-common
+          - apt-transport-https
+          - ca-certificates
+          - lsb-release
+        state: present
       when: ansible_os_family == "Ubuntu"
 
     - name: Download MongoDB GPG Key
-      shell: wget -qO - https://www.mongodb.org/static/pgp/server-5.0.asc | sudo apt-key add -
+      # shell: wget -qO - https://www.mongodb.org/static/pgp/server-5.0.asc | sudo apt-key add -
+      shell: curl -fsSL https://www.mongodb.org/static/pgp/server-6.0.asc|sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/mongodb-6.gpg
 
     - name: Add MongoDB Repository
-      shell: echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/5.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-5.0.list
+      # shell: echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/5.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-5.0.list
+      shell: echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu $(lsb_release -cs)/mongodb-org/6.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list
 
     - name: Update APT Package Cache
       apt:
@@ -53,6 +61,14 @@
         name: mongod
         state: started
         enabled: yes
+
+    - name: Run MongoDB Version Command
+      command: mongod --version
+      register: mongod_version_output
+
+    - name: Display MongoDB Version
+      debug:
+        var: mongod_version_output.stdout_lines
 
     - name: Configure MongoDB
       template:
