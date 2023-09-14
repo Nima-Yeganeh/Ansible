@@ -115,3 +115,8 @@
       service:
         name: mongod
         state: restarted
+
+    - name: Initialize MongoDB Replica Set
+      shell: |
+        mongosh --eval 'rs.initiate({ _id: "{{ mongodb_replica_set_name }}", members: [{ _id: 0, host: "host1:{{ mongodb_port }}", priority: 2 }, { _id: 1, host: "host2:{{ mongodb_port }}", priority: 1 }, { _id: 2, host: "host3:{{ mongodb_port }}", arbiterOnly: true }]})' --quiet
+      ignore_errors: yes
