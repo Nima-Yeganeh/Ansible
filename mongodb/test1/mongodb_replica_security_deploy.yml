@@ -16,16 +16,6 @@
       ansible.builtin.apt:
         update_cache: yes
 
-    - name: Configure MongoDB Security
-      template:
-        src: mongodb.conf.j2
-        dest: /etc/mongod.conf
-
-    - name: Restart MongoDB Service
-      service:
-        name: mongod
-        state: restarted
-
     - name: Install UFW
       ansible.builtin.apt:
         name: ufw
