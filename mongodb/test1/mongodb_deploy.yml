@@ -115,3 +115,12 @@
       service:
         name: mongod
         state: restarted
+
+    - name: Copy MongoDB Deploy Config Script
+      template:
+        src: mongodb.deploy.conf.j2
+        dest: /etc/mongodb.deploy.conf.sh
+
+    - name: Initialize MongoDB Replica Set
+      shell: bash /etc/mongodb.deploy.conf.sh
+      ignore_errors: yes
