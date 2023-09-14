@@ -1,0 +1,11 @@
+---
+- name: Remove lines with host1 from /etc/hosts file
+  hosts: servers
+  become: yes
+  
+  tasks:
+    - name: Remove lines with host1 from /etc/hosts
+      lineinfile:
+        path: /etc/hosts
+        state: absent
+        regexp: ".*\\shost1\\s.*"
