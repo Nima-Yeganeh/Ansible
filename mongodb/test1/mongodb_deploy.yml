@@ -12,9 +12,13 @@
     mongodb_replica_set_name: "myreplica"
 
   tasks:
+    - name: Update APT Cache
+      apt:
+        update_cache: yes
+
     - name: Install MongoDB
       apt:
-        name: mongodb-org
+        name: mongodb-server
         state: present
         update_cache: yes
       vars:
