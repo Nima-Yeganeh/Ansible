@@ -11,14 +11,13 @@
     - name: Update Package Cache
       apt:
         update_cache: yes
-      when: ansible_os_family == "Ubuntu"
 
     - name: Install Required Packages
       apt:
         name:
           - unzip
           - curl
-      when: ansible_os_family == "Ubuntu"
+        state: present
 
     - name: Download Consul
       get_url:

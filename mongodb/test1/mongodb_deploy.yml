@@ -19,7 +19,6 @@
     - name: Update Package Cache
       apt:
         update_cache: yes
-      when: ansible_os_family == "Ubuntu"
 
     - name: Install Required Packages
       apt:
@@ -33,7 +32,6 @@
           - ca-certificates
           - lsb-release
         state: present
-      when: ansible_os_family == "Ubuntu"
 
     - name: Run the rm command to delete the MongoDB GPG key
       command: rm -f /etc/apt/trusted.gpg.d/mongodb-6.gpg
@@ -55,9 +53,8 @@
         name: mongodb-org
         state: present
         update_cache: yes
-      vars:
-        mongodb_version: "{{ mongodb_version }}"
-      when: ansible_os_family == "Ubuntu"
+      # vars:
+        # mongodb_version: "{{ mongodb_version }}"
 
     - name: Start MongoDB Service
       service:
