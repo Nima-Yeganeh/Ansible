@@ -16,12 +16,6 @@
       ansible.builtin.apt:
         update_cache: yes
 
-    - name: Copy MongoDB Keyfile
-      ansible.builtin.copy:
-        src: mongodb-keyfile
-        dest: /etc/mongodb-keyfile
-        mode: '0600' # Set the file permissions to be secure (rw-------)
-
     - name: Configure MongoDB Security
       template:
         src: mongodb.conf.j2
