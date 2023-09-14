@@ -1,5 +1,5 @@
 ---
-- name: Remove lines with host1 from /etc/hosts file
+- name: TEST
   hosts: servers
   become: yes
   
