@@ -3,6 +3,14 @@
   hosts: servers
   become: yes
   
+  vars:
+    mongodb_version: "6.0"
+    mongodb_data_dir: "/var/lib/mongodb"
+    mongodb_log_dir: "/var/log/mongodb"
+    mongodb_bind_ip: "0.0.0.0"
+    mongodb_port: 27017
+    mongodb_replica_set_name: "myreplica"
+
   tasks: 
     - name: Initialize MongoDB Replica Set
       ansible.builtin.shell: |
