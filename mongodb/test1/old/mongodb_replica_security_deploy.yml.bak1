@@ -16,6 +16,8 @@
       ansible.builtin.apt:
         update_cache: yes
 
+    # On ansible host it is possible to create a keyfile for security using the command >> openssl rand -base64 741 > /path/to/mongodb-keyfile
+    # In this case, the file has already been created and is available in the folder for copying.
     - name: Copy MongoDB Keyfile
       ansible.builtin.copy:
         src: mongodb-keyfile
@@ -24,7 +26,7 @@
 
     - name: Configure MongoDB Security
       template:
-        src: mongodb.conf.j2
+        src: mongodb.security.conf.j2
         dest: /etc/mongod.conf
 
     - name: Restart MongoDB Service
