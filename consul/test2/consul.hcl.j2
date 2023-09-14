@@ -4,7 +4,7 @@ bind_addr = "{{ ansible_default_ipv4.address }}"
 advertise_addr = "{{ ansible_default_ipv4.address }}"
 client_addr = "0.0.0.0"
 retry_join = [
-    "{{ hostvars['host1'].ansible_default_ipv4.address,
-    hostvars['host2'].ansible_default_ipv4.address,
-    hostvars['host3'].ansible_default_ipv4.address }}"
+    "{{ hostvars['host1'].ansible_default_ipv4.address }}",
+    "{{ hostvars['host2'].ansible_default_ipv4.address }}",
+    "{{ hostvars['host3'].ansible_default_ipv4.address }}"
 ]
