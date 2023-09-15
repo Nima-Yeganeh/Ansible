@@ -4,12 +4,17 @@
   become: yes
   
   tasks:
-    - name: Stop and remove all Docker containers
+    - name: Gather information about Docker containers
+      command: docker ps -q
+      register: docker_container_ids
+      changed_when: false
+      ignore_errors: yes
+
+    - name: Stop and remove Docker containers
       docker_container:
-        name: "{{ item.name }}"
+        name: "{{ item }}"
         state: absent
-      with_items: "{{ ansible_docker_containers }}"
-      when: item.state != 'absent'
+      loop: "{{ docker_container_ids.stdout_lines }}"
 
     - name: Stop UFW service
       ansible.builtin.service:
