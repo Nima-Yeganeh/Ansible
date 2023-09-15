@@ -62,9 +62,7 @@
         var: htpasswd_result.stdout
 
     - name: Save htpasswd result to file for (user:username & pass:password)
-      template:
-        src: /dev/null
+      copy:
+        content: "{{ htpasswd_result.stdout }}"
         dest: /home/registry/auth/htpasswd
         mode: '0644'
-        content: "{{ htpasswd_result.stdout }}"
-
