@@ -34,8 +34,7 @@
         group: root
 
     - name: Reload systemd
-      ansible.builtin.systemd:
-        state: reloaded
+      command: systemctl daemon-reload
 
     - name: Start the ncat@10000.service unit
       ansible.builtin.systemd:
