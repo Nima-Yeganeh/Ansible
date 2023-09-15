@@ -125,8 +125,7 @@
         seconds: 2
 
     - name: Pull hello-world Docker Image for Test
-      docker_image:
-        name: hello-world
+      shell: sudo docker image pull hello-world
 
     - name: Tag Docker image >> localhost:5000/hello-world
       docker_image:
