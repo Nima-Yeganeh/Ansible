@@ -3,6 +3,7 @@
   hosts: servers
   become: yes
   tasks:
+
     - name: Copy file from remote server
       fetch:
         src: /home/registry/certs/domain.crt
@@ -16,3 +17,6 @@
         - { src: 'file.crt/host1/home/registry/certs/domain.crt', dest: "/etc/docker/certs.d/{{ hostvars['host1'].ansible_default_ipv4.address }}:5000/ca.crt" }
         - { src: 'file.crt/host2/home/registry/certs/domain.crt', dest: "/etc/docker/certs.d/{{ hostvars['host2'].ansible_default_ipv4.address }}:5000/ca.crt" }
         - { src: 'file.crt/host3/home/registry/certs/domain.crt', dest: "/etc/docker/certs.d/{{ hostvars['host3'].ansible_default_ipv4.address }}:5000/ca.crt" }
+
+    - name: Remove folder locally
+      local_action: file path=file.crt state=absent
