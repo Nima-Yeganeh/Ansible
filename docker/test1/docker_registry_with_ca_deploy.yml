@@ -99,9 +99,13 @@
           REGISTRY_AUTH_HTPASSWD_PATH: /auth/htpasswd
           REGISTRY_AUTH: htpasswd
 
-    - name: List running Docker containers
-      docker_container:
-        state: list
+    - name: Run Docker ps -a
+      command: docker ps -a
+      register: docker_ps_result
+
+    - name: Display Docker ps -a Result
+      debug:
+        var: docker_ps_result.stdout_lines
 
     - name: Run Docker Login
       shell: sudo docker login -uusername -ppassword 127.0.0.1:5000
