@@ -148,7 +148,8 @@
     - name: Fetch domain.crt from servers
       fetch:
         src: /home/registry/certs/domain.crt
-        dest: "{{ playbook_dir }}/{{ inventory_hostname }}.crt"
+        # dest: "{{ playbook_dir }}/{{ inventory_hostname }}.crt"
+        dest: "{{ inventory_hostname }}.crt"
 
     - name: Create folders in /etc/docker/certs.d/ for certificates
       file:
@@ -158,8 +159,3 @@
         - "{{ hostvars['host1'].ansible_default_ipv4.address }}"
         - "{{ hostvars['host2'].ansible_default_ipv4.address }}"
         - "{{ hostvars['host3'].ansible_default_ipv4.address }}"
-
-    - name: Copy host1.crt to remote hosts/servers (/etc/docker/certs.d/)
-      copy:
-        src: host1.crt
-        dest: "/etc/docker/certs.d/{{ hostvars['host1'].ansible_default_ipv4.address }}:5000/ca.crt"
