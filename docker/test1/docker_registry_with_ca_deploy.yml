@@ -25,3 +25,16 @@
       ansible.builtin.apt:
         name: ufw
         state: absent
+
+    - name: Create /home/registry/certs directory
+      file:
+        path: /home/registry/certs
+        state: directory
+        mode: '0755'
+
+    - name: Create /home/registry/auth directory
+      file:
+        path: /home/registry/auth
+        state: directory
+        mode: '0755'
+
