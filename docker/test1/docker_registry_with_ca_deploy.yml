@@ -184,3 +184,14 @@
       pause:
         seconds: 2
 
+    - name: Pull Test >> Docker image >> from Host1 Repository >> hello-world
+      shell: sudo docker pull {{ hostvars['host1'].ansible_default_ipv4.address }}:5000/hello-world
+
+    - name: Run Docker images command
+      command: docker images
+      register: docker_images_result
+
+    - name: Display Docker images Result
+      debug:
+        var: docker_images_result.stdout_lines
+
