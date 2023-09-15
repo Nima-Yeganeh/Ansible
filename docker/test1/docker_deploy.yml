@@ -4,6 +4,16 @@
   become: yes
   
   tasks: 
+    - name: Remove the file
+      file:
+        path: /usr/share/keyrings/docker-archive-keyring.gpg
+        state: absent
+
+    - name: Remove the file
+      file:
+        path: /etc/apt/sources.list.d/docker.list
+        state: absent
+
     - name: Update Package Cache
       apt:
         update_cache: yes
@@ -19,11 +29,6 @@
         - gnupg
         - lsb-release
         - gpg
-
-    - name: Remove the file
-      file:
-        path: /usr/share/keyrings/docker-archive-keyring.gpg
-        state: absent
 
     - name: Download and install Docker GPG key
       shell: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
