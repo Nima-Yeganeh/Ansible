@@ -66,3 +66,16 @@
         content: "{{ htpasswd_result.stdout }}"
         dest: /home/registry/auth/htpasswd
         mode: '0644'
+
+    - name: Copy OpenSSL configuration template
+      template:
+        src: openssl.conf.j2
+        dest: /home/registry/certs/openssl.conf
+        mode: '0644'
+
+    - name: Generate self-signed certificate
+      command: >
+        openssl req -x509 -nodes -newkey rsa:2048
+        -keyout /home/registry/certs/domain.key
+        -out /home/registry/certs/domain.crt
+        -days 365 -config /home/registry/certs/openssl.conf
