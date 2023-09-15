@@ -145,11 +145,10 @@
       pause:
         seconds: 2
 
-    # - name: Fetch domain.crt from servers
-      # fetch:
-        # src: /home/registry/certs/domain.crt
-        # dest: "{{ playbook_dir }}/{{ inventory_hostname }}.crt"
-        # dest: "{{ ansible_default_ipv4.address }}.crt"
+    - name: Fetch domain.crt from servers
+      fetch:
+        src: /home/registry/certs/domain.crt
+        dest: file.crt
 
     - name: Create folders in /etc/docker/certs.d/ for other server certificates
       file:
@@ -159,3 +158,16 @@
         - "{{ hostvars['host1'].ansible_default_ipv4.address }}"
         - "{{ hostvars['host2'].ansible_default_ipv4.address }}"
         - "{{ hostvars['host3'].ansible_default_ipv4.address }}"
+
+    - name: Copy certificates to remote hosts/servers >> /etc/docker/certs.d/
+      copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+      loop:
+        - { src: 'file.crt/host1/home/registry/certs/domain.crt', dest: "/etc/docker/certs.d/{{ hostvars['host1'].ansible_default_ipv4.address }}:5000/ca.crt" }
+        - { src: 'file.crt/host2/home/registry/certs/domain.crt', dest: "/etc/docker/certs.d/{{ hostvars['host2'].ansible_default_ipv4.address }}:5000/ca.crt" }
+        - { src: 'file.crt/host3/home/registry/certs/domain.crt', dest: "/etc/docker/certs.d/{{ hostvars['host3'].ansible_default_ipv4.address }}:5000/ca.crt" }
+
+    - name: Remove temp folder locally
+      local_action: file path=file.crt state=absent
+
