@@ -128,14 +128,10 @@
       shell: sudo docker image pull hello-world
 
     - name: Tag Docker image >> localhost:5000/hello-world
-      docker_image:
-        name: hello-world
-        source: localhost:5000/hello-world
+      shell: sudo docker tag hello-world localhost:5000/hello-world
 
     - name: Push Docker image >> localhost:5000/hello-world
-      docker_image:
-        name: localhost:5000/hello-world
-        push: yes
+      shell: sudo docker push localhost:5000/hello-world
 
     - name: Run Docker images command
       command: docker images
