@@ -112,11 +112,11 @@
         seconds: 2
 
     - name: Run Docker Login
-      shell: sudo docker login -uusername -ppassword 127.0.0.1:5000
+      shell: sudo docker login -uusername -ppassword localhost:5000
       register: docker_login_result
       ignore_errors: yes
 
-    - name: Display Docker Login Result (host=127.0.0.1:5000 user=username pass=password)
+    - name: Display Docker Login Result (host=localhost:5000 user=username pass=password)
       debug:
         var: docker_login_result.stdout_lines
 
