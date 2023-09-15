@@ -1,0 +1,56 @@
+---
+- name: Docker Deploy
+  hosts: servers
+  become: yes
+  
+  tasks: 
+    - name: Update Package Cache
+      apt:
+        update_cache: yes
+
+    - name: Install Required Packages
+      apt:
+        name:
+          - nmap
+          - ncat
+        state: present
+
+    - name: Copy ncat systemd unit service file
+      ansible.builtin.copy:
+        src: ncat_systemd_unit_service.conf.j2
+        dest: /etc/systemd/system/ncat@.service
+        mode: '0644'
+        owner: root
+        group: root
+
+    - name: Reload systemd
+      command: systemctl daemon-reload
+
+    - name: Stop the service
+      systemd:
+        name: ncat@10000.service
+        state: stopped
+
+    - name: Start the ncat@10000.service unit
+      ansible.builtin.systemd:
+        name: ncat@10000.service
+        state: started
+
+    - name: Send "test" using nc >> to 127.0.0.1:10000
+      ansible.builtin.shell: timeout 2 echo "Test! Hello to port 10000!" | nc 127.0.0.1 10000
+
+    - name: Get Ncat Status >> ps aux command
+      ansible.builtin.shell: ps aux | grep ncat
+      register: command_result_output
+
+    - name: Display Ncat Status >> ps aux command
+      debug:
+        var: command_result_output.stdout_lines
+
+    - name: Get Status >> /home/ncat.txt
+      ansible.builtin.shell: cat /home/ncat.txt
+      register: command_result_output
+
+    - name: Display Status >> /home/ncat.txt
+      debug:
+        var: command_result_output.stdout_lines
