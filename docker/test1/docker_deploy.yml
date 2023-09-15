@@ -18,6 +18,12 @@
         - curl
         - gnupg
         - lsb-release
+        - gpg
+
+    - name: Remove the file
+      file:
+        path: /usr/share/keyrings/docker-archive-keyring.gpg
+        state: absent
 
     # - name: Get Docker Status
     #   ansible.builtin.shell: docker ps -a
