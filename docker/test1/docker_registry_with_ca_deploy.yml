@@ -145,15 +145,3 @@
       pause:
         seconds: 2
 
-    - name: Run curl command > https://localhost:5000/v2/_catalog
-      command: curl -u username:password -k -X GET https://localhost:5000/v2/_catalog 2>/dev/null
-      register: curl_result
-
-    - name: Display curl command result > https://localhost:5000/v2/_catalog
-      debug:
-        var: curl_result.stdout_lines
-
-    - name: Pause for 2 seconds
-      pause:
-        seconds: 2
-
