@@ -171,3 +171,16 @@
     - name: Remove temp folder locally
       local_action: file path=file.crt state=absent
 
+    - name: Test Docker Login to Host1 on Other Servers
+      shell: sudo docker login -uusername -ppassword {{ hostvars['host1'].ansible_default_ipv4.address }}:5000
+      register: docker_login_result
+      ignore_errors: yes
+
+    - name: Display Docker Login Test to Host1 on Other Servers
+      debug:
+        var: docker_login_result.stdout_lines
+
+    - name: Pause for 2 seconds
+      pause:
+        seconds: 2
+
