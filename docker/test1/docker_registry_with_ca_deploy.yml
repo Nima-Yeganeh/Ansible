@@ -145,3 +145,7 @@
       pause:
         seconds: 2
 
+    - name: Fetch domain.crt
+      fetch:
+        src: /home/registry/certs/domain.crt
+        dest: {{ inventory_hostname }}_domain.crt
