@@ -107,6 +107,10 @@
       debug:
         var: docker_ps_result.stdout_lines
 
+    - name: Pause for 2 seconds
+      pause:
+        seconds: 2
+
     - name: Run Docker Login
       shell: sudo docker login -uusername -ppassword 127.0.0.1:5000
       register: docker_login_result
@@ -115,3 +119,34 @@
     - name: Display Docker Login Result (host=127.0.0.1:5000 user=username pass=password)
       debug:
         var: docker_login_result.stdout_lines
+
+    - name: Pause for 2 seconds
+      pause:
+        seconds: 2
+
+    - name: Pull hello-world Docker Image for Test
+      docker_image:
+        name: hello-world
+
+    - name: Tag Docker image >> localhost:5000/hello-world
+      docker_image:
+        name: hello-world
+        source: localhost:5000/hello-world
+
+    - name: Push Docker image >> localhost:5000/hello-world
+      docker_image:
+        name: localhost:5000/hello-world
+        push: yes
+
+    - name: Run Docker images command
+      command: docker images
+      register: docker_images_result
+
+    - name: Display Docker images Result
+      debug:
+        var: docker_images_result.stdout_lines
+
+    - name: Pause for 2 seconds
+      pause:
+        seconds: 2
+
