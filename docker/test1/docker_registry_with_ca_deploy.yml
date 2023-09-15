@@ -79,3 +79,23 @@
         -keyout /home/registry/certs/domain.key
         -out /home/registry/certs/domain.crt
         -days 365 -config /home/registry/certs/openssl.conf
+
+    - name: Run Docker container for Registry
+      docker_container:
+        name: registry
+        image: registry:2
+        detach: yes
+        restart_policy: always
+        ports:
+          - "5000:5000"
+        volumes:
+          - /home/registry/certs:/certs
+          - /home/registry/auth:/auth
+          - /reg:/var/lib/registry
+        env:
+          REGISTRY_HTTP_TLS_CERTIFICATE: /certs/domain.crt
+          REGISTRY_HTTP_TLS_KEY: /certs/domain.key
+          REGISTRY_AUTH_HTPASSWD_REALM: Registry Realm
+          REGISTRY_AUTH_HTPASSWD_PATH: /auth/htpasswd
+          REGISTRY_AUTH: htpasswd
+
