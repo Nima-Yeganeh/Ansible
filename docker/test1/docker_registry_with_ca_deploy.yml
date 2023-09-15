@@ -149,7 +149,7 @@
       fetch:
         src: /home/registry/certs/domain.crt
         # dest: "{{ playbook_dir }}/{{ inventory_hostname }}.crt"
-        dest: "{{ inventory_hostname }}.crt"
+        dest: "{{ ansible_default_ipv4.address }}.crt"
 
     - name: Create folders in /etc/docker/certs.d/ for certificates
       file:
