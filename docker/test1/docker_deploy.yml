@@ -45,12 +45,32 @@
       apt:
         update_cache: yes
 
+    - name: Install Docker CE, Docker CE CLI, Containerd.io, and Docker Compose
+      apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-compose
+        state: present
 
+    - name: Enable Docker service
+      ansible.builtin.service:
+        name: docker
+        enabled: yes
 
-    # - name: Get Docker Status
-    #   ansible.builtin.shell: docker ps -a
-    #   register: command_result_output
+    - name: Start Docker service
+      ansible.builtin.service:
+        name: docker
+        state: started
 
-    # - name: Display Docker Status
-    #   debug:
-    #     var: command_result_output.stdout_lines
+    - name: Run hello-world Docker container for test
+      ansible.builtin.command: sudo docker run hello-world
+  
+    - name: Get Docker Status
+      ansible.builtin.shell: docker ps -a
+      register: command_result_output
+
+    - name: Display Docker Status
+      debug:
+        var: command_result_output.stdout_lines
