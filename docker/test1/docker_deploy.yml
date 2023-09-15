@@ -33,6 +33,13 @@
     - name: Download and install Docker GPG key
       shell: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
 
+    - name: Add Docker repository
+      command: echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+    - name: Update Package Cache
+      apt:
+        update_cache: yes
+
     # - name: Get Docker Status
     #   ansible.builtin.shell: docker ps -a
     #   register: command_result_output
