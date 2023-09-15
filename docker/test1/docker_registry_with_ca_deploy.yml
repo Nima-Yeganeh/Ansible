@@ -38,3 +38,33 @@
         state: directory
         mode: '0755'
 
+    - name: Update Package Cache
+      apt:
+        update_cache: yes
+
+    - name: Install required packages
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - apt-transport-https
+        - ca-certificates
+        - curl
+        - openssl
+        - apache2-utils
+
+    - name: Generate htpasswd hash for (user:username & pass:password)
+      shell: sudo htpasswd -Bbn username password
+      register: htpasswd_result
+
+    - name: Display htpasswd hash for (user:username & pass:password)
+      debug:
+        var: htpasswd_result.stdout
+
+    - name: Save htpasswd result to file for (user:username & pass:password)
+      template:
+        src: /dev/null
+        dest: /home/registry/auth/htpasswd
+        mode: '0644'
+        content: "{{ htpasswd_result.stdout }}"
+
