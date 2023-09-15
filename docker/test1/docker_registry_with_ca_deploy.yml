@@ -1,0 +1,22 @@
+---
+- name: Docker Registry With CA Deploy
+  hosts: servers
+  become: yes
+  
+  tasks:
+    - name: Stop and remove all Docker containers
+      docker_container:
+        name: "{{ item.name }}"
+        state: absent
+      with_items: "{{ ansible_docker_containers }}"
+      when: item.state != 'absent'
+
+    - name: Stop UFW service
+      ansible.builtin.service:
+        name: ufw
+        state: stopped
+
+    - name: Uninstall UFW
+      ansible.builtin.apt:
+        name: ufw
+        state: absent
