@@ -8,18 +8,55 @@
       apt:
         update_cache: yes
 
-    - name: Uninstall UFW
-      ansible.builtin.apt:
-        name: ufw
-        state: absent
-
     - name: Stop UFW service
       ansible.builtin.service:
         name: ufw
         state: stopped
 
+    - name: Uninstall UFW
+      ansible.builtin.apt:
+        name: ufw
+        state: absent
+
     - name: Install Required Packages
       apt:
         name:
-          - unzip
+          - nmap
+          - ncat
         state: present
+
+    - name: Copy ncat systemd unit service file
+      ansible.builtin.copy:
+        src: ncat_systemd_unit_service.conf.j2
+        dest: /etc/systemd/system/ncat@.service
+        mode: '0644'
+        owner: root
+        group: root
+
+    - name: Reload systemd
+      ansible.builtin.systemd:
+        state: reloaded
+
+    - name: Start the ncat@10000.service unit
+      ansible.builtin.systemd:
+        name: ncat@10000.service
+        state: started
+
+    - name: Send "test" using nc >> to 127.0.0.1:10000
+      ansible.builtin.shell: echo "test" | timeout 2 nc 127.0.0.1 10000 && timeout 2 echo "Hello to port 10000!" | nc 127.0.0.1
+
+    - name: Get Ncat Status >> ps aux command
+      ansible.builtin.shell: ps aux | grep ncat
+      register: command_result_output
+
+    - name: Display Ncat Status >> ps aux command
+      debug:
+        var: command_result_output.stdout_lines
+
+    - name: Get Status >> /home/ncat.txt
+      ansible.builtin.shell: cat /home/ncat.txt
+      register: command_result_output
+
+    - name: Display Status >> /home/ncat.txt
+      debug:
+        var: command_result_output.stdout_lines
