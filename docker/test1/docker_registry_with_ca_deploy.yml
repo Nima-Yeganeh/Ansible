@@ -5,7 +5,7 @@
   
   tasks:
     - name: Gather information about Docker containers
-      command: docker ps -q
+      command: docker ps -aq
       register: docker_container_ids
       changed_when: false
       ignore_errors: yes
