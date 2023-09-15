@@ -159,11 +159,7 @@
         - "{{ hostvars['host2'].ansible_default_ipv4.address }}"
         - "{{ hostvars['host3'].ansible_default_ipv4.address }}"
 
-    - name: Copy files to remote hosts
+    - name: Copy host1.crt to remote hosts/servers (/etc/docker/certs.d/)
       copy:
-        src: "{{ item.src }}"
-        dest: "{{ item.dest }}"
-      loop:
-        - { src: 'host1.crt', dest: "/etc/docker/certs.d/{{ hostvars['host1'].ansible_default_ipv4.address }}:5000/ca.crt" }
-        - { src: 'host2.crt', dest: "/etc/docker/certs.d/{{ hostvars['host2'].ansible_default_ipv4.address }}:5000/ca.crt" }
-        - { src: 'host3.crt', dest: "/etc/docker/certs.d/{{ hostvars['host3'].ansible_default_ipv4.address }}:5000/ca.crt" }
+        src: host1.crt
+        dest: "/etc/docker/certs.d/{{ hostvars['host1'].ansible_default_ipv4.address }}:5000/ca.crt"
