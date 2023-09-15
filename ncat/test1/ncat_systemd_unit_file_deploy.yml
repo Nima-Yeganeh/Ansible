@@ -1,0 +1,25 @@
+---
+- name: Ncat Systemd Unit File Service Deploy
+  hosts: servers
+  become: yes
+  
+  tasks: 
+    - name: Update Package Cache
+      apt:
+        update_cache: yes
+
+    - name: Uninstall UFW
+      ansible.builtin.apt:
+        name: ufw
+        state: absent
+
+    - name: Stop UFW service
+      ansible.builtin.service:
+        name: ufw
+        state: stopped
+
+    - name: Install Required Packages
+      apt:
+        name:
+          - unzip
+        state: present
