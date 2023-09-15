@@ -1,0 +1,9 @@
+---
+- name: Copy file from remote server to Ansible control machine
+  hosts: your_target_host  # Replace with your target host or host group
+  become: yes  # Use become to execute commands with sudo privileges
+  tasks:
+    - name: Copy file from remote server
+      fetch:
+        src: /home/registry/certs/domain.crt
+        dest: file.crt

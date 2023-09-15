@@ -145,13 +145,13 @@
       pause:
         seconds: 2
 
-    - name: Fetch domain.crt from servers
-      fetch:
-        src: /home/registry/certs/domain.crt
+    # - name: Fetch domain.crt from servers
+      # fetch:
+        # src: /home/registry/certs/domain.crt
         # dest: "{{ playbook_dir }}/{{ inventory_hostname }}.crt"
-        dest: "{{ ansible_default_ipv4.address }}.crt"
+        # dest: "{{ ansible_default_ipv4.address }}.crt"
 
-    - name: Create folders in /etc/docker/certs.d/ for certificates
+    - name: Create folders in /etc/docker/certs.d/ for other server certificates
       file:
         path: "/etc/docker/certs.d/{{ item }}:5000"
         state: directory
