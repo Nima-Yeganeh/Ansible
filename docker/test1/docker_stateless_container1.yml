@@ -44,19 +44,3 @@
         dest: /home/website1/index.php
         mode: '0644'
 
-    - name: Run MY Custom PHP 7.4 Container
-      docker_container:
-        name: my-php-container
-        image: my-php:7.4-apache
-        ports:
-          - "8080:80"
-        detach: yes
-
-    - name: Run Redis Docker Container
-      docker_container:
-        name: redis-container
-        image: redis:latest
-        ports:
-          - "6379:6379"
-        detach: yes
-
