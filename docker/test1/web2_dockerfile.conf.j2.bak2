@@ -24,4 +24,7 @@ WORKDIR /var/www/html
 
 COPY index.php .
 
+CMD ["sh", "-c", "rm -f /var/www/html/visit_count.txt && apache2-foreground"]
+
 EXPOSE 80
+
