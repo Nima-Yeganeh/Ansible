@@ -1,0 +1,64 @@
+---
+- name: Docker Container 2 - Web Deploy + SQL Database
+  hosts: host1
+  become: yes
+  
+  tasks:
+    - name: Gather information about Docker containers
+      command: docker ps -aq
+      register: docker_container_ids
+      changed_when: false
+      ignore_errors: yes
+
+    - name: Stop and remove Docker containers
+      docker_container:
+        name: "{{ item }}"
+        state: absent
+      loop: "{{ docker_container_ids.stdout_lines }}"
+
+    - name: Stop UFW service
+      ansible.builtin.service:
+        name: ufw
+        state: stopped
+
+    - name: Uninstall UFW
+      ansible.builtin.apt:
+        name: ufw
+        state: absent
+
+    - name: Create Directory
+      file:
+        path: /home/website1/
+        state: directory
+        mode: '0755'
+
+    - name: Copy Dockerfile Configuration File
+      copy:
+        src: web2_dockerfile.conf.j2
+        dest: /home/website1/Dockerfile
+        mode: '0644'
+
+    - name: Copy Template File >> index.php
+      template:
+        src: web2_index_php_conf.j2
+        dest: /home/website1/index.php
+        mode: '0644'
+
+    - name: Build Custom Docker Image >> my-web2-php:7.4-apache >> Host1 & Host2 Task
+      command: docker build -t my-web2-php:7.4-apache /home/website1
+      when: inventory_hostname == 'host1' or inventory_hostname == 'host2'
+
+    - name: Delete temp folder /home/website1/
+      file:
+        path: /home/website1/
+        state: absent
+
+    - name: Run Custom PHP 7.4 Docker Container >> Host1 & Host2 Task
+      docker_container:
+        name: my-web2-php-container
+        image: my-web2-php:7.4-apache
+        ports:
+          - "8080:80"
+        detach: yes
+      when: inventory_hostname == 'host1' or inventory_hostname == 'host2'
+
