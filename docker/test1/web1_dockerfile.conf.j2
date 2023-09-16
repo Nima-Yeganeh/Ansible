@@ -3,10 +3,7 @@ FROM php:alpine
 
 # Install dependencies and the Redis extension
 RUN apk add --no-cache \
-    git \
-    autoconf \
-    build-base \
- && pecl install redis \
+    pecl install redis \
  && docker-php-ext-enable redis \
  && apk del autoconf build-base
 
