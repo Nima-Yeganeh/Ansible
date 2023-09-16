@@ -4,17 +4,17 @@
   become: yes
   
   tasks:
-    - name: Gather information about Docker containers
-      command: docker ps -aq
-      register: docker_container_ids
-      changed_when: false
-      ignore_errors: yes
+    # - name: Gather information about Docker containers
+    #   command: docker ps -aq
+    #   register: docker_container_ids
+    #   changed_when: false
+    #   ignore_errors: yes
 
-    - name: Stop and remove Docker containers
-      docker_container:
-        name: "{{ item }}"
-        state: absent
-      loop: "{{ docker_container_ids.stdout_lines }}"
+    # - name: Stop and remove Docker containers
+    #   docker_container:
+    #     name: "{{ item }}"
+    #     state: absent
+    #   loop: "{{ docker_container_ids.stdout_lines }}"
 
     # - name: Stop UFW service
     #   ansible.builtin.service:
@@ -57,17 +57,17 @@
         detach: yes
       when: inventory_hostname == 'host1' or inventory_hostname == 'host2'
 
-    - name: Run MySQL Database Docker Container
-      docker_container:
-        name: mysql-container
-        image: mysql:latest
-        detach: yes
-        env:
-          MYSQL_ROOT_PASSWORD: my-secret-password
-        ports:
-          - "3306:3306"
-        command: "--bind-address=0.0.0.0"
-      when: inventory_hostname == 'host1'
+    # - name: Run MySQL Database Docker Container
+    #   docker_container:
+    #     name: mysql-container
+    #     image: mysql:latest
+    #     detach: yes
+    #     env:
+    #       MYSQL_ROOT_PASSWORD: my-secret-password
+    #     ports:
+    #       - "3306:3306"
+    #     command: "--bind-address=0.0.0.0"
+    #   when: inventory_hostname == 'host1'
 
     # - name: Update Package Cache
     #   apt:
@@ -82,14 +82,14 @@
     #     - mysql-client
     #   when: inventory_hostname == 'host1'  
 
-    - name: Copy Script File
-      template:
-        src: web2_bash_script_conf.j2
-        dest: /home/website2/script.sh
-        mode: '0644'
+    # - name: Copy Script File
+    #   template:
+    #     src: web2_bash_script_conf.j2
+    #     dest: /home/website2/script.sh
+    #     mode: '0644'
 
-    - name: Execute Shell Script
-      shell: sudo bash /home/website2/script.sh
+    # - name: Execute Shell Script
+    #   shell: sudo bash /home/website2/script.sh
 
     # - name: Delete temp folder /home/website2/
     #   file:
