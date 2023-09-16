@@ -8,6 +8,16 @@
     <?php
     // Local visit count file
     $localVisitCountFile = 'visit_count.txt';
+    // Check if the local visit count file exists
+    if (file_exists($localVisitCountFile)) {
+        // Read the current local visit count from the file
+        $localVisitCount = intval(file_get_contents($localVisitCountFile));
+        $localVisitCount++;
+        file_put_contents($localVisitCountFile, $localVisitCount);
+    } else {
+        $localVisitCount = 1;
+        file_put_contents($localVisitCountFile, $localVisitCount);
+    }
     // Redis configuration
     $redisHost = '{{ ansible_default_ipv4.address }}';
     $redisPort = 6379;
@@ -29,16 +39,6 @@
             $globalVisitCount = 1;
             $redis->set($globalVisitCountKey, $globalVisitCount);
         }
-        // Check if the local visit count file exists
-        if (file_exists($localVisitCountFile)) {
-            // Read the current local visit count from the file
-            $localVisitCount = intval(file_get_contents($localVisitCountFile));
-            $localVisitCount++;
-            file_put_contents($localVisitCountFile, $localVisitCount);
-        } else {
-            $localVisitCount = 1;
-            file_put_contents($localVisitCountFile, $localVisitCount);
-        }
         // Close the Redis connection
         $redis->close();
     } catch (Exception $e) {
@@ -55,3 +55,4 @@
     <?php endif; ?>
 </body>
 </html>
+
