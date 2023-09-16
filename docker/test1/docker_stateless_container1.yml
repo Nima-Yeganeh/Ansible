@@ -44,6 +44,9 @@
         dest: /home/website1/index.php
         mode: '0644'
 
+    - name: Remove Docker Image
+      shell: docker image rm my-php:7.4-apache
+
     - name: Build Custom Docker Image >> my-php:7.4-apache
       command: docker build -t my-php:7.4-apache /home/website1
 
@@ -66,4 +69,3 @@
     - name: Display Message
       debug:
         msg: "Hello, website is ready >> http://{{ ansible_default_ipv4.address }}:8080"
-
