@@ -32,12 +32,12 @@
         state: directory
         mode: '0755'
 
-    - name: Run PHP 7.4 container
+    - name: Run MY Custom PHP 7.4 Container
       docker_container:
         name: my-php-container
-        image: php:7.4-fpm
+        image: my-php:7.4-apache
         ports:
-          - "8080:9000"
+          - "8080:80"
         volumes:
           - /home/website1/var/www/html:/var/www/html
         detach: yes
