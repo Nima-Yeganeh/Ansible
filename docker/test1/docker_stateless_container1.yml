@@ -42,3 +42,11 @@
           - /home/website1/var/www/html:/var/www/html
         detach: yes
 
+    - name: Run Redis Docker Container
+      docker_container:
+        name: redis-container
+        image: redis:latest
+        ports:
+          - "6379:6379"
+        detach: yes
+
