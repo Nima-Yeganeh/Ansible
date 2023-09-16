@@ -1,6 +1,6 @@
 ---
 - name: Docker Stateless Container - Web Deploy
-  hosts: servers
+  hosts: host1
   become: yes
   
   tasks:
@@ -43,4 +43,27 @@
         src: web1_index_php_conf.j2
         dest: /home/website1/index.php
         mode: '0644'
+
+    - name: Build Custom Docker Image >> my-php:7.4-apache
+      command: docker build -t my-php:7.4-apache /home/website1
+
+    - name: Run Custom PHP 7.4 Docker Container
+      docker_container:
+        name: my-php-container
+        image: my-php:7.4-apache
+        ports:
+          - "8080:80"
+        detach: yes
+
+    - name: Run Redis Docker Container
+      docker_container:
+        name: redis-container
+        image: redis:latest
+        ports:
+          - "6379:6379"
+        detach: yes
+
+    - name: Display Message
+      debug:
+        msg: "Hello, website is ready >> http://{{ ansible_default_ipv4.address }}:8080"
 
