@@ -1,0 +1,37 @@
+<?php
+
+// MySQL database configuration
+$mysqlHost = '192.168.244.170';     // Replace with your MySQL server host
+$mysqlUsername = 'root';  // Replace with your MySQL username
+$mysqlPassword = 'my-secret-password';  // Replace with your MySQL password
+$mysqlDatabase = 'test';    // Replace with your MySQL database name
+
+try {
+    // Connect to the MySQL database using PDO
+    $pdo = new PDO("mysql:host=$mysqlHost;dbname=$mysqlDatabase", $mysqlUsername, $mysqlPassword);
+
+    // Set PDO error mode to exception
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    // Define the data to be inserted
+    $name = "John Doe";
+    $email = "johndoe@example.com";
+
+    // Prepare an SQL statement for insertion
+    $stmt = $pdo->prepare("INSERT INTO info (name, email) VALUES (:name, :email)");
+
+    // Bind parameters and execute the statement
+    $stmt->bindParam(':name', $name);
+    $stmt->bindParam(':email', $email);
+
+    // Execute the prepared statement
+    $stmt->execute();
+
+    // Display a success message
+    echo "Data inserted successfully!";
+} catch (PDOException $e) {
+    // Handle database connection or query errors
+    echo "Error: " . $e->getMessage();
+}
+?>
+

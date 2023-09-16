@@ -1,3 +1,2 @@
-sleep 5
-echo "CREATE DATABASE IF NOT EXISTS test; USE test; CREATE TABLE IF NOT EXISTS info (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255) NOT NULL, email VARCHAR(255) NOT NULL);" | mysql -h 192.168.244.170 -P 3306 -uroot -pmy-secret-password
-echo "INSERT INTO test.info (name, email) VALUES ('John Doe', 'john.doe@example.com'), ('Jane Smith', 'jane.smith@example.com');" | mysql -h 192.168.244.170 -P 3306 -uroot -pmy-secret-password
+sleep 10
+echo "CREATE DATABASE IF NOT EXISTS test; USE test; CREATE TABLE IF NOT EXISTS visit_data (id INT AUTO_INCREMENT PRIMARY KEY, remote_ip VARCHAR(255), current_datetime DATETIME, current_url VARCHAR(255), user_agent VARCHAR(255), remote_port INT;" | mysql -h 192.168.244.170 -P 3306 -uroot -pmy-secret-password

@@ -1,37 +1,35 @@
 <?php
 
-// MySQL database configuration
-$mysqlHost = '192.168.244.170';     // Replace with your MySQL server host
-$mysqlUsername = 'root';  // Replace with your MySQL username
-$mysqlPassword = 'my-secret-password';  // Replace with your MySQL password
-$mysqlDatabase = 'test';    // Replace with your MySQL database name
+// Database configuration
+$host = '192.168.244.170';
+$dbname = 'test';
+$username = 'root';
+$password = 'my-secret-password';
 
 try {
-    // Connect to the MySQL database using PDO
-    $pdo = new PDO("mysql:host=$mysqlHost;dbname=$mysqlDatabase", $mysqlUsername, $mysqlPassword);
+    // Create a new PDO instance
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
 
-    // Set PDO error mode to exception
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    // Get the remote host's IP address
+    $remote_ip = $_SERVER['REMOTE_ADDR'];
 
-    // Define the data to be inserted
-    $name = "John Doe";
-    $email = "johndoe@example.com";
+    // Get the local date and time
+    $current_datetime = date('Y-m-d H:i:s');
 
-    // Prepare an SQL statement for insertion
-    $stmt = $pdo->prepare("INSERT INTO info (name, email) VALUES (:name, :email)");
+    // Get the URL of the current page
+    $current_url = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 
-    // Bind parameters and execute the statement
-    $stmt->bindParam(':name', $name);
-    $stmt->bindParam(':email', $email);
+    // Get additional remote information
+    $user_agent = $_SERVER['HTTP_USER_AGENT'];
+    $remote_port = $_SERVER['REMOTE_PORT'];
 
-    // Execute the prepared statement
-    $stmt->execute();
+    // Prepare and execute an SQL INSERT statement
+    $stmt = $pdo->prepare("INSERT INTO visit_data (remote_ip, current_datetime, current_url, user_agent, remote_port) VALUES (?, ?, ?, ?, ?)");
+    $stmt->execute([$remote_ip, $current_datetime, $current_url, $user_agent, $remote_port]);
 
-    // Display a success message
-    echo "Data inserted successfully!";
+    echo "Data inserted into the database successfully!";
 } catch (PDOException $e) {
-    // Handle database connection or query errors
-    echo "Error: " . $e->getMessage();
+    die("Database error: " . $e->getMessage());
 }
 ?>
 
