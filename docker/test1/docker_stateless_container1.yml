@@ -1,6 +1,6 @@
 ---
 - name: Docker Stateless Container - Web Deploy
-  hosts: host1
+  hosts: servers
   become: yes
   
   tasks:
@@ -79,4 +79,3 @@
     - name: Display Message
       debug:
         msg: "Hello, website is ready >> http://{{ ansible_default_ipv4.address }}:8080"
-
