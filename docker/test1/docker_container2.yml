@@ -28,30 +28,25 @@
 
     - name: Create Directory
       file:
-        path: /home/website1/
+        path: /home/website2/
         state: directory
         mode: '0755'
 
     - name: Copy Dockerfile Configuration File
       copy:
         src: web2_dockerfile.conf.j2
-        dest: /home/website1/Dockerfile
+        dest: /home/website2/Dockerfile
         mode: '0644'
 
     - name: Copy Template File >> index.php
       template:
         src: web2_index_php_conf.j2
-        dest: /home/website1/index.php
+        dest: /home/website2/index.php
         mode: '0644'
 
     - name: Build Custom Docker Image >> my-web2-php:7.4-apache >> Host1 & Host2 Task
-      command: docker build -t my-web2-php:7.4-apache /home/website1
+      command: docker build -t my-web2-php:7.4-apache /home/website2
       when: inventory_hostname == 'host1' or inventory_hostname == 'host2'
-
-    - name: Delete temp folder /home/website1/
-      file:
-        path: /home/website1/
-        state: absent
 
     - name: Run Second Website Custom PHP 7.4 Docker Container >> Host1 & Host2 Task
       docker_container:
@@ -87,10 +82,16 @@
         - mysql-client
       when: inventory_hostname == 'host1'  
 
-    - name: Create Table Columns
-      ansible.builtin.mysql_query:
-        login_user: root
-        login_password: my-secret-password
-        query: "CREATE TABLE IF NOT EXISTS test.info (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255) NOT NULL, email VARCHAR(255) NOT NULL);"
-      when: inventory_hostname == 'host1'  
+    - name: Copy Script File
+      template:
+        src: web2_bash_script_conf.j2
+        dest: /home/website2/script.sh
+        mode: '0644'
 
+    - name: Execute Shell Script
+      ansible.builtin.script: /home/website2/script.sh
+
+    - name: Delete temp folder /home/website2/
+      file:
+        path: /home/website2/
+        state: absent
