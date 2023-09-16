@@ -35,7 +35,7 @@
     - name: Run PHP 7.4 container
       docker_container:
         name: my-php-container
-        image: php:7.4-apache
+        image: php:7.4-fpm
         ports:
           - "8080:80"
         volumes:
