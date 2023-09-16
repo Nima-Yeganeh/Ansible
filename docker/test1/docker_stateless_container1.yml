@@ -32,11 +32,6 @@
         state: directory
         mode: '0755'
 
-    - name: Pull PHP 7.4 image
-      docker_image:
-        name: php:7.4-apache
-        state: present
-
     - name: Run PHP 7.4 container
       docker_container:
         name: my-php-container
