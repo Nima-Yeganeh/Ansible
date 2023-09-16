@@ -37,7 +37,8 @@
         name: my-php-container
         image: php:7.4-fpm
         ports:
-          - "8080:80"
+          - "8080:9000"
         volumes:
           - /home/website1/var/www/html:/var/www/html
         detach: yes
+
