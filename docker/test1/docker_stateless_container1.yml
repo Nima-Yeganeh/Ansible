@@ -1,0 +1,48 @@
+---
+- name: Docker Stateless Container - Web Deploy
+  hosts: host1
+  become: yes
+  
+  tasks:
+    - name: Gather information about Docker containers
+      command: docker ps -aq
+      register: docker_container_ids
+      changed_when: false
+      ignore_errors: yes
+
+    - name: Stop and remove Docker containers
+      docker_container:
+        name: "{{ item }}"
+        state: absent
+      loop: "{{ docker_container_ids.stdout_lines }}"
+
+    - name: Stop UFW service
+      ansible.builtin.service:
+        name: ufw
+        state: stopped
+
+    - name: Uninstall UFW
+      ansible.builtin.apt:
+        name: ufw
+        state: absent
+
+    - name: Create directory
+      file:
+        path: /home/website1/var/www/html
+        state: directory
+        mode: '0755'
+
+    - name: Pull PHP 7.4 image
+      docker_image:
+        name: php:7.4-apache
+        state: present
+
+    - name: Run PHP 7.4 container
+      docker_container:
+        name: my-php-container
+        image: php:7.4-apache
+        ports:
+          - "8080:80"
+        volumes:
+          - /home/website1/var/www/html:/var/www/html
+        detach: yes
