@@ -27,37 +27,9 @@ try {
     $stmt = $pdo->prepare("INSERT INTO visit_data (remote_ip, current_datetime, current_url, user_agent, remote_port) VALUES (?, ?, ?, ?, ?)");
     $stmt->execute([$remote_ip, $current_datetime, $current_url, $user_agent, $remote_port]);
 
-    // echo "Data inserted into the database successfully!";
-} catch (PDOException $e) {
-    die("Database error: " . $e->getMessage());
-}
-
-try {
-    // Create a new PDO instance
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-
-    // Execute the SQL query to count global visits
-    $query = "SELECT COUNT(*) AS global_visit FROM test.visit_data";
-    $stmt = $pdo->query($query);
-    $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    // Extract the 'global_visit' value
-    $globalVisit = $result['global_visit'];
-
+    echo "Data inserted into the database successfully!";
 } catch (PDOException $e) {
     die("Database error: " . $e->getMessage());
 }
 ?>
-
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Global Visits</title>
-</head>
-<body>
-    <h1>Global Visits</h1>
-
-    <p>Total Global Visits: <?php echo $globalVisit; ?></p>
-</body>
-</html>
 
