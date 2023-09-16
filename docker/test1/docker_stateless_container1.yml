@@ -63,6 +63,15 @@
           - "6379:6379"
         detach: yes
 
+    - name: Run Docker ps -a
+      command: docker ps -a
+      register: docker_ps_result
+
+    - name: Display Docker ps -a Result
+      debug:
+        var: docker_ps_result.stdout_lines
+
     - name: Display Message
       debug:
         msg: "Hello, website is ready >> http://{{ ansible_default_ipv4.address }}:8080"
+
