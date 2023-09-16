@@ -1,0 +1,8 @@
+---
+- name: Test
+  hosts: host1
+  become: yes
+  
+  tasks:
+    - name: Execute Shell Script
+      shell: sudo bash /home/website2/script.sh

@@ -91,7 +91,7 @@
     - name: Execute Shell Script
       shell: sudo bash /home/website2/script.sh
 
-    - name: Delete temp folder /home/website2/
-      file:
-        path: /home/website2/
-        state: absent
+    # - name: Delete temp folder /home/website2/
+    #   file:
+    #     path: /home/website2/
+    #     state: absent
