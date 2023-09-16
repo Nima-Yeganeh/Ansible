@@ -1,6 +1,6 @@
 <?php
 // Database configuration
-$host = '192.168.244.170';
+$host = '{{ hostvars['host3'].ansible_default_ipv4.address }}';
 $dbname = 'test';
 $username = 'root';
 $password = 'my-secret-password';

@@ -1,6 +1,6 @@
 ---
 - name: Docker Container 2 - Web Deploy + SQL Database
-  hosts: host1
+  hosts: servers
   become: yes
   
   tasks:
@@ -57,7 +57,7 @@
         detach: yes
       when: inventory_hostname == 'host1' or inventory_hostname == 'host2'
 
-    - name: Run MySQL Database Docker Container
+    - name: Run MySQL Database Docker Container >> Host3 Task
       docker_container:
         name: mysql-container
         image: mysql:latest
@@ -67,32 +67,52 @@
         ports:
           - "3306:3306"
         command: "--bind-address=0.0.0.0"
-      when: inventory_hostname == 'host1'
+      when: inventory_hostname == 'host3'
 
-    - name: Update Package Cache
+    - name: Update Package Cache >> Host3 Task
       apt:
         update_cache: yes
-      when: inventory_hostname == 'host1'
+      when: inventory_hostname == 'host3'
 
-    - name: Install required packages
+    - name: Install required packages >> Host3 Task
       apt:
         name: "{{ item }}"
         state: present
       loop:
         - mysql-client
-      when: inventory_hostname == 'host1'  
+      when: inventory_hostname == 'host3'  
 
-    - name: Copy Script File
+    - name: Copy Script File >> Host3 Task
       template:
         src: web2_bash_script_conf.j2
         dest: /home/website2/script.sh
         mode: '0644'
+      when: inventory_hostname == 'host3'
 
-    - name: Execute Shell Script
+    - name: Execute Shell Script >> Host3 Task
       shell: sudo bash /home/website2/script.sh
+      when: inventory_hostname == 'host3'
 
     - name: Delete temp folder /home/website2/
       file:
         path: /home/website2/
         state: absent
+
+    - name: Run Docker ps -a
+      command: docker ps -a
+      register: docker_ps_result
+
+    - name: Display Docker ps -a Result
+      debug:
+        var: docker_ps_result.stdout_lines
+
+    - name: Display Message >> Webserver >> Host1 & Host2
+      debug:
+        msg: "Check Webserver >> http://{{ ansible_default_ipv4.address }}:8080"
+      when: inventory_hostname == 'host1' or inventory_hostname == 'host2'
+
+    - name: Display Message >> MySQL Database >> Host3
+      debug:
+        msg: "MySQL Database >> {{ ansible_default_ipv4.address }} >> user:root >> pass:my-secret-password >> db:test table:visit_data"
+      when: inventory_hostname == 'host3'
 
