@@ -89,7 +89,7 @@
         mode: '0644'
 
     - name: Execute Shell Script
-      ansible.builtin.script: /home/website2/script.sh
+      ansible.builtin.script: sudo bash /home/website2/script.sh
 
     - name: Delete temp folder /home/website2/
       file:
