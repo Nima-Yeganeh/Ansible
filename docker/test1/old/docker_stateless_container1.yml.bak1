@@ -1,6 +1,6 @@
 ---
 - name: Docker Stateless Container - Web Deploy
-  hosts: host1
+  hosts: servers
   become: yes
   
   tasks:
