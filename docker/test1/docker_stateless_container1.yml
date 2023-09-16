@@ -47,6 +47,11 @@
     - name: Build Custom Docker Image >> my-php:7.4-apache
       command: docker build -t my-php:7.4-apache /home/website1
 
+    - name: Delete temp folder /home/website1/
+      file:
+        path: /home/website1/
+        state: absent
+
     - name: Run Custom PHP 7.4 Docker Container
       docker_container:
         name: my-php-container
