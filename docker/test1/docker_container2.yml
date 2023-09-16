@@ -87,26 +87,6 @@
         - mysql-client
       when: inventory_hostname == 'host1'  
 
-    - name: Run SQL Commands
-      ansible.builtin.mysql_db:
-        login_user: root
-        login_password: my-secret-password
-        name: test
-        state: present
-      when: "'test' not in ansible_mysql_databases"
-      ignore_errors: yes
-      when: inventory_hostname == 'host1'  
-
-    - name: Create Table
-      ansible.builtin.mysql_db:
-        login_user: root
-        login_password: my-secret-password
-        db: test
-        state: table
-        name: info
-      when: "'info' not in ansible_mysql_tables"
-      when: inventory_hostname == 'host1'  
-
     - name: Create Table Columns
       ansible.builtin.mysql_query:
         login_user: root
