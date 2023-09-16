@@ -11,7 +11,7 @@ try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
 
     // Execute the SQL query to select all rows from visit_data
-    $query = "SELECT * FROM test.visit_data";
+    $query = "SELECT * FROM test.visit_data ORDER BY id DESC";
     $stmt = $pdo->query($query);
 
     // Fetch all rows as an associative array
@@ -34,14 +34,20 @@ try {
     <table border="1">
         <tr>
             <th>ID</th>
-            <th>Visit Date</th>
-            <!-- Add more column headers here -->
+            <th>Remote IP</th>
+            <th>DateTime</th>
+            <th>URL</th>
+            <th>User Agent</th>
+            <th>Remote Port</th>
         </tr>
         <?php foreach ($results as $row): ?>
         <tr>
             <td><?php echo $row['id']; ?></td>
-            <td><?php echo $row['visit_date']; ?></td>
-            <!-- Add more table cells for other columns as needed -->
+            <td><?php echo $row['remote_ip']; ?></td>
+            <td><?php echo $row['current_datetime']; ?></td>
+            <td><?php echo $row['current_url']; ?></td>
+            <td><?php echo $row['user_agent']; ?></td>
+            <td><?php echo $row['remote_port']; ?></td>
         </tr>
         <?php endforeach; ?>
     </table>
