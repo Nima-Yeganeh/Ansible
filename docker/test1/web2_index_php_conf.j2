@@ -1,10 +1,46 @@
 <?php
 
-// Database configuration
-$host = '192.168.244.170';
-$dbname = 'test';
-$username = 'root';
-$password = 'my-secret-password';
+try {
+    // Create a new PDO instance
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
+
+    // Get the remote host's IP address
+    $remote_ip = $_SERVER['REMOTE_ADDR'];
+
+    // Get the local date and time
+    $current_datetime = date('Y-m-d H:i:s');
+
+    // Get the URL of the current page
+    $current_url = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+
+    // Get additional remote information
+    $user_agent = $_SERVER['HTTP_USER_AGENT'];
+    $remote_port = $_SERVER['REMOTE_PORT'];
+
+    // Prepare and execute an SQL INSERT statement
+    $stmt = $pdo->prepare("INSERT INTO visit_data (remote_ip, current_datetime, current_url, user_agent, remote_port) VALUES (?, ?, ?, ?, ?)");
+    $stmt->execute([$remote_ip, $current_datetime, $current_url, $user_agent, $remote_port]);
+
+    // echo "Data inserted into the database successfully!";
+} catch (PDOException $e) {
+    die("Database error: " . $e->getMessage());
+}
+
+try {
+    // Create a new PDO instance
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
+
+    // Execute the SQL query to count global visits
+    $query = "SELECT COUNT(*) AS global_visit FROM test.visit_data";
+    $stmt = $pdo->query($query);
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    // Extract the 'global_visit' value
+    $globalVisit = $result['global_visit'];
+
+} catch (PDOException $e) {
+    die("Database error: " . $e->getMessage());
+}
 
 try {
     // Create a new PDO instance
@@ -20,14 +56,19 @@ try {
 } catch (PDOException $e) {
     die("Database error: " . $e->getMessage());
 }
+
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Visit Data</title>
+    <title>Site Visit Checking</title>
 </head>
 <body>
+    <h1>Global Visits</h1>
+
+    <p>Total Global Visits: <?php echo $globalVisit; ?></p>
+
     <h1>Visit Data</h1>
 
     <?php if (count($results) > 0): ?>
@@ -54,5 +95,7 @@ try {
     <?php else: ?>
     <p>No data available.</p>
     <?php endif; ?>
+
 </body>
 </html>
+
