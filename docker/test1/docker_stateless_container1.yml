@@ -44,29 +44,32 @@
         dest: /home/website1/index.php
         mode: '0644'
 
-    - name: Build Custom Docker Image >> my-php:7.4-apache
+    - name: Build Custom Docker Image >> my-php:7.4-apache >> Host1 & Host2 Task
       command: docker build -t my-php:7.4-apache /home/website1
+      when: inventory_hostname == 'host1' or inventory_hostname == 'host2'
 
     - name: Delete temp folder /home/website1/
       file:
         path: /home/website1/
         state: absent
 
-    - name: Run Custom PHP 7.4 Docker Container
+    - name: Run Custom PHP 7.4 Docker Container >> Host1 & Host2 Task
       docker_container:
         name: my-php-container
         image: my-php:7.4-apache
         ports:
           - "8080:80"
         detach: yes
+      when: inventory_hostname == 'host1' or inventory_hostname == 'host2'
 
-    - name: Run Redis Docker Container
+    - name: Run Redis Docker Container >> Host3 Task
       docker_container:
         name: redis-container
         image: redis:latest
         ports:
           - "6379:6379"
         detach: yes
+      when: inventory_hostname == 'host3'
 
     - name: Run Docker ps -a
       command: docker ps -a
@@ -76,7 +79,13 @@
       debug:
         var: docker_ps_result.stdout_lines
 
-    - name: Display Message
+    - name: Display Message >> Webserver >> Host1 & Host2
       debug:
-        msg: "Hello, website is ready >> http://{{ ansible_default_ipv4.address }}:8080"
+        msg: "Webserver >> http://{{ ansible_default_ipv4.address }}:8080"
+      when: inventory_hostname == 'host1' or inventory_hostname == 'host2'
+
+    - name: Display Message >> Redis Database >> Host3
+      debug:
+        msg: "Redis Database >> {{ ansible_default_ipv4.address }}"
+      when: inventory_hostname == 'host3'
 

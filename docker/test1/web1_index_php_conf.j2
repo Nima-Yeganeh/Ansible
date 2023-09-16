@@ -9,7 +9,7 @@
     // Local visit count file
     $localVisitCountFile = 'visit_count.txt';
     // Redis configuration
-    $redisHost = '{{ ansible_default_ipv4.address }}';
+    $redisHost = '{{ hostvars['host3'].ansible_default_ipv4.address }}';
     $redisPort = 6379;
     try {
         // Attempt to connect to Redis
