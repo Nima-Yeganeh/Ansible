@@ -1,5 +1,11 @@
 <?php
 
+// Database configuration
+$host = '192.168.244.170';
+$dbname = 'test';
+$username = 'root';
+$password = 'my-secret-password';
+
 try {
     // Create a new PDO instance
     $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
