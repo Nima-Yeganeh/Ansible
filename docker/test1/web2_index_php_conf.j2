@@ -19,10 +19,6 @@
     // Get additional remote information
     $user_agent = $_SERVER['HTTP_USER_AGENT'];
     $remote_port = $_SERVER['REMOTE_PORT'];
-    $referer = $_SERVER['HTTP_REFERER'];
-
-    // Use get_browser() to get browser information
-    $browser_info = get_browser(null, true);
     ?>
 
     <p>Remote IP Address: <?php echo $remote_ip; ?></p>
@@ -30,8 +26,5 @@
     <p>Current URL: <?php echo $current_url; ?></p>
     <p>User Agent: <?php echo $user_agent; ?></p>
     <p>Remote Port: <?php echo $remote_port; ?></p>
-    <p>Referer URL: <?php echo $referer; ?></p>
-    <p>Browser Name: <?php echo $browser_info['browser']; ?></p>
-    <p>Browser Version: <?php echo $browser_info['version']; ?></p>
 </body>
 </html>
