@@ -87,12 +87,30 @@
         - mysql-client
       when: inventory_hostname == 'host1'  
 
-    - name: Execute SQL Command
-      ansible.builtin.shell: |
-        echo 'CREATE DATABASE IF NOT EXISTS test; USE test; CREATE TABLE IF NOT EXISTS info (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255) NOT NULL, email VARCHAR(255) NOT NULL);' | mysql -h 192.168.244.170 -P 3306 -uroot -pmy-secret-password
-      register: mysql_output
+    - name: Run SQL Commands
+      ansible.builtin.mysql_db:
+        login_user: root
+        login_password: my-secret-password
+        name: test
+        state: present
+      when: "'test' not in ansible_mysql_databases"
+      ignore_errors: yes
+      when: inventory_hostname == 'host1'  
 
-    - name: Display MySQL Output
-      debug:
-        var: mysql_output.stdout_lines
+    - name: Create Table
+      ansible.builtin.mysql_db:
+        login_user: root
+        login_password: my-secret-password
+        db: test
+        state: table
+        name: info
+      when: "'info' not in ansible_mysql_tables"
+      when: inventory_hostname == 'host1'  
+
+    - name: Create Table Columns
+      ansible.builtin.mysql_query:
+        login_user: root
+        login_password: my-secret-password
+        query: "CREATE TABLE IF NOT EXISTS test.info (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255) NOT NULL, email VARCHAR(255) NOT NULL);"
+      when: inventory_hostname == 'host1'  
 
