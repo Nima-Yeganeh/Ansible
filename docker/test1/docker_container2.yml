@@ -16,15 +16,15 @@
         state: absent
       loop: "{{ docker_container_ids.stdout_lines }}"
 
-    - name: Stop UFW service
-      ansible.builtin.service:
-        name: ufw
-        state: stopped
+    # - name: Stop UFW service
+    #   ansible.builtin.service:
+    #     name: ufw
+    #     state: stopped
 
-    - name: Uninstall UFW
-      ansible.builtin.apt:
-        name: ufw
-        state: absent
+    # - name: Uninstall UFW
+    #   ansible.builtin.apt:
+    #     name: ufw
+    #     state: absent
 
     - name: Create Directory
       file:
@@ -69,18 +69,18 @@
         command: "--bind-address=0.0.0.0"
       when: inventory_hostname == 'host1'
 
-    - name: Update Package Cache
-      apt:
-        update_cache: yes
-      when: inventory_hostname == 'host1'
+    # - name: Update Package Cache
+    #   apt:
+    #     update_cache: yes
+    #   when: inventory_hostname == 'host1'
 
-    - name: Install required packages
-      apt:
-        name: "{{ item }}"
-        state: present
-      loop:
-        - mysql-client
-      when: inventory_hostname == 'host1'  
+    # - name: Install required packages
+    #   apt:
+    #     name: "{{ item }}"
+    #     state: present
+    #   loop:
+    #     - mysql-client
+    #   when: inventory_hostname == 'host1'  
 
     - name: Copy Script File
       template:
@@ -95,3 +95,4 @@
     #   file:
     #     path: /home/website2/
     #     state: absent
+
