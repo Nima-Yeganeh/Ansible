@@ -26,11 +26,23 @@
         name: ufw
         state: absent
 
-    - name: Create directory
+    - name: Create Directory
       file:
-        path: /home/website1/var/www/html
+        path: /home/website1/
         state: directory
         mode: '0755'
+
+    - name: Copy Dockerfile Configuration File
+      copy:
+        src: web1_dockerfile.conf.j2
+        dest: /home/website1/Dockerfile
+        mode: '0644'
+
+    - name: Copy Template File >> index.php
+      template:
+        src: web1_index_php_conf.j2
+        dest: /home/website1/index.php
+        mode: '0644'
 
     - name: Run MY Custom PHP 7.4 Container
       docker_container:
@@ -38,8 +50,6 @@
         image: my-php:7.4-apache
         ports:
           - "8080:80"
-        volumes:
-          - /home/website1/var/www/html:/var/www/html
         detach: yes
 
     - name: Run Redis Docker Container
