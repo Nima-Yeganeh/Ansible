@@ -1,10 +1,11 @@
 FROM php:7.4-apache
 
-# Install system dependencies and PHP extensions
-RUN apt-get update && \
-    apt-get install -y libpng-dev libjpeg-dev libfreetype6-dev zip unzip && \
-    docker-php-ext-configure gd --with-freetype --with-jpeg && \
-    docker-php-ext-install -j$(nproc) gd pdo pdo_mysql mysqli
+# Install system dependencies and the Redis extension
+RUN apt-get update && apt-get install -y \
+    libzip-dev \
+    && docker-php-ext-install zip \
+    && pecl install redis \
+    && docker-php-ext-enable redis
 
 # Enable Apache modules
 RUN a2enmod rewrite
@@ -27,4 +28,3 @@ COPY index.php .
 CMD ["sh", "-c", "rm -f /var/www/html/visit_count.txt && apache2-foreground"]
 
 EXPOSE 80
-
