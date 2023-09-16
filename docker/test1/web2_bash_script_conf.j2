@@ -1,2 +1,2 @@
 sleep 10
-echo "CREATE DATABASE IF NOT EXISTS test; USE test; CREATE TABLE IF NOT EXISTS visit_data (id INT AUTO_INCREMENT PRIMARY KEY, remote_ip VARCHAR(255), current_datetime DATETIME, current_url VARCHAR(255), user_agent VARCHAR(255), remote_port INT;" | mysql -h 192.168.244.170 -P 3306 -uroot -pmy-secret-password
+echo "CREATE DATABASE IF NOT EXISTS test; USE test; CREATE TABLE IF NOT EXISTS visit_data (id INT AUTO_INCREMENT PRIMARY KEY, remote_ip VARCHAR(255), current_datetime DATETIME, current_url VARCHAR(255), user_agent VARCHAR(255), remote_port INT);" | mysql -h 192.168.244.170 -P 3306 -uroot -pmy-secret-password
