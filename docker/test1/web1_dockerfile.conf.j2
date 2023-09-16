@@ -1,20 +1,30 @@
-# Use the official PHP Alpine image as the base image
-FROM php:alpine
+FROM php:7.4-apache
 
-# Install dependencies and the Redis extension
-RUN apk add --no-cache \
-    pecl install redis \
- && docker-php-ext-enable redis \
- && apk del autoconf build-base
+# Install system dependencies and the Redis extension
+RUN apt-get update && apt-get install -y \
+    libzip-dev \
+    && docker-php-ext-install zip \
+    && pecl install redis \
+    && docker-php-ext-enable redis
 
-# Set the working directory inside the container
+# Enable Apache modules
+RUN a2enmod rewrite
+
+# Configure Apache document root
+ENV APACHE_DOCUMENT_ROOT /var/www/html
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
+RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}/!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
+
+# Restart Apache
+RUN service apache2 restart
+
+# Cleanup
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /var/www/html
 
-# Copy your PHP application files into the container
 COPY index.php .
 
-# Expose the port your PHP application will run on (if applicable)
-EXPOSE 80
+CMD ["sh", "-c", "rm -f /var/www/html/visit_count.txt && apache2-foreground"]
 
-# Start your PHP application
-CMD ["php", "-S", "0.0.0.0:80"]
+EXPOSE 80

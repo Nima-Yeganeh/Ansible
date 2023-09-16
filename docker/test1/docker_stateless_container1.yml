@@ -79,3 +79,4 @@
     - name: Display Message
       debug:
         msg: "Hello, website is ready >> http://{{ ansible_default_ipv4.address }}:8080"
+
