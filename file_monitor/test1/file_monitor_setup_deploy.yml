@@ -1,6 +1,6 @@
 ---
 - name: File Monitor Setup and Deploy
-  hosts: host1
+  hosts: servers
   become: yes
   
   tasks:
@@ -32,17 +32,17 @@
         line: "{{ hostvars['host1'].ansible_default_ipv4.address }} host1"
         insertbefore: EOF
 
-    #- name: Add host2 entry to /etc/hosts
-    #  lineinfile:
-    #    path: /etc/hosts
-    #    line: "{{ hostvars['host2'].ansible_default_ipv4.address }} host2"
-    #    insertbefore: EOF
+    - name: Add host2 entry to /etc/hosts
+      lineinfile:
+        path: /etc/hosts
+        line: "{{ hostvars['host2'].ansible_default_ipv4.address }} host2"
+        insertbefore: EOF
 
-    #- name: Add host3 entry to /etc/hosts
-    #  lineinfile:
-    #    path: /etc/hosts
-    #    line: "{{ hostvars['host3'].ansible_default_ipv4.address }} host3"
-    #    insertbefore: EOF
+    - name: Add host3 entry to /etc/hosts
+      lineinfile:
+        path: /etc/hosts
+        line: "{{ hostvars['host3'].ansible_default_ipv4.address }} host3"
+        insertbefore: EOF
 
     - name: Update Package Cache
       apt:
@@ -142,7 +142,7 @@
 
     - name: Pause for 2 seconds
       pause:
-        seconds: 4
+        seconds: 5
 
     - name: Testing >> Create the /etc/ztestfile1.txt file
       file:
@@ -164,5 +164,5 @@
 
     - name: Display Message
       debug:
-        msg: "Test file changes in /etc/ >> check mail command >> sudo postqueue -p & other command >> sudo postcat -q ID"
+        msg: "Test file changes in /etc/ >> check mail command >> sudo postqueue -p & other command >> sudo postcat -q ID >> other command to check the service >> sudo systemctl status monitor_etc.service"
 
