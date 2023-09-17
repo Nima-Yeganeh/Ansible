@@ -1,0 +1,78 @@
+---
+- name: File Monitor Setup and Deploy
+  hosts: host1
+  become: yes
+  
+  tasks:
+    - name: Set Hostname
+      hostname:
+        name: "{{ desired_hostname }}"
+
+    - name: Remove lines with host1 from /etc/hosts
+      lineinfile:
+        path: /etc/hosts
+        state: absent
+        regexp: ".*\\shost1\\s.*"
+
+    - name: Remove lines with host2 from /etc/hosts
+      lineinfile:
+        path: /etc/hosts
+        state: absent
+        regexp: ".*\\shost2\\s.*"
+
+    - name: Remove lines with host3 from /etc/hosts
+      lineinfile:
+        path: /etc/hosts
+        state: absent
+        regexp: ".*\\shost3\\s.*"
+
+    - name: Add host1 entry to /etc/hosts
+      lineinfile:
+        path: /etc/hosts
+        line: "{{ hostvars['host1'].ansible_default_ipv4.address }} host1"
+        insertbefore: EOF
+
+    - name: Add host2 entry to /etc/hosts
+      lineinfile:
+        path: /etc/hosts
+        line: "{{ hostvars['host2'].ansible_default_ipv4.address }} host2"
+        insertbefore: EOF
+
+    - name: Add host3 entry to /etc/hosts
+      lineinfile:
+        path: /etc/hosts
+        line: "{{ hostvars['host3'].ansible_default_ipv4.address }} host3"
+        insertbefore: EOF
+
+    - name: Update Package Cache
+      apt:
+        update_cache: yes
+
+    - name: Remove Mailutils and Postfix Packages
+      apt:
+        name: 
+          - postfix
+          - mailutils
+        state: absent
+
+    - name: Install Postfix
+      apt:
+        name: postfix
+        state: present
+
+    - name: Set Postfix Configuration
+      template:
+        src: postfix_main.cf.j2
+        dest: /etc/postfix/main.cf
+
+    - name: Reload Postfix
+      service:
+        name: postfix
+        state: reloaded
+
+    - name: Ensure Postfix Service is Enabled and Started
+      service:
+        name: postfix
+        state: started
+        enabled: yes
+

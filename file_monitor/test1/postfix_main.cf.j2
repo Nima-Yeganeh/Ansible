@@ -1,0 +1,8 @@
+# /etc/postfix/main.cf
+
+myhostname = {{ desired_hostname }}
+mydomain = domain.local
+myorigin = $myhostname
+inet_interfaces = all
+mydestination = $myhostname, localhost.$mydomain, localhost, $mydomain
+relayhost = smtp.domain.local
