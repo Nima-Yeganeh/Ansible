@@ -81,3 +81,21 @@
         name: mailutils
         state: present
 
+    - name: Run postsuper command >> To remove all messages from the Postfix mail queue
+      command: sudo postsuper -d ALL
+
+    - name: Install inotify-tools
+      apt:
+        name: inotify-tools
+        state: present
+
+    - name: Create a script to monitor /etc directory
+      copy:
+        content: |
+          #!/bin/bash
+          while true; do
+            inotifywait -r -e modify,create,delete /etc
+          done
+        dest: /usr/local/bin/monitor_etc.sh
+        mode: '0755'
+
