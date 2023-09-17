@@ -76,3 +76,8 @@
         state: started
         enabled: yes
 
+    - name: Install mailutils
+      apt:
+        name: mailutils
+        state: present
+
