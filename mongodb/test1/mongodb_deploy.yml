@@ -139,12 +139,6 @@
       register: command_result
       ignore_errors: yes
       when: inventory_hostname == 'host1'
-      # when: inventory_hostname == 'host1' or inventory_hostname == 'host2'
-
-    - name: Check if the task had an error
-      debug:
-        msg: "Task completed with an error: {{ command_result.stderr }}"
-      when: command_result.failed
 
     - name: Display the command's output
       debug:
