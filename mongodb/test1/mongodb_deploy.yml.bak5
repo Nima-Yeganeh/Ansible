@@ -69,25 +69,12 @@
           - lsb-release
         state: present
 
-    # - name: Run the rm command to delete the MongoDB GPG key
-    #   command: rm -f /etc/apt/trusted.gpg.d/mongodb-6.gpg
+    - name: Run the rm command to delete the MongoDB GPG key
+      command: rm -f /etc/apt/trusted.gpg.d/mongodb-6.gpg
 
-    - name: Remove the MongoDB GPG key file
-      file:
-        path: /etc/apt/trusted.gpg.d/mongodb-6.gpg
-        state: absent
-
-    # - name: Download MongoDB GPG Key
+    - name: Download MongoDB GPG Key
       # shell: wget -qO - https://www.mongodb.org/static/pgp/server-5.0.asc | sudo apt-key add -
-      # ansible.builtin.shell: curl -fsSL https://www.mongodb.org/static/pgp/server-6.0.asc|sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/mongodb-6.gpg
-
-    - name: Download MongoDB GPG key
-      get_url:
-        url: https://www.mongodb.org/static/pgp/server-6.0.asc
-        dest: /tmp/mongodb-6.0.asc
-
-    - name: Import MongoDB GPG key
-      command: sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/mongodb-6.gpg /tmp/mongodb-6.0.asc
+      ansible.builtin.shell: curl -fsSL https://www.mongodb.org/static/pgp/server-6.0.asc|sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/mongodb-6.gpg
 
     - name: Add MongoDB Repository
       # shell: echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/5.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-5.0.list
@@ -138,7 +125,6 @@
       ansible.builtin.shell: bash /etc/mongodb.deploy.conf.sh
       register: command_result
       ignore_errors: yes
-      when: inventory_hostname == 'host1' or inventory_hostname == 'host2'
 
     - name: Check if the task had an error
       debug:
@@ -149,4 +135,3 @@
       debug:
         msg: "Command output: {{ command_result.stdout }}"
       when: not command_result.failed
-
