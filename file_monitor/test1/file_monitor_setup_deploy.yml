@@ -101,8 +101,8 @@
             datetime=$(echo $(date))
             email="root@domain.local"
             subject="File changes in /etc folder - Notification"
-            hostname="host1"
-            hostip="192.168.244.170"
+            hostname="{{ desired_hostname }}"
+            hostip="{{ ansible_default_ipv4.address }}"
             message="File $file has changed in /etc folder. Action: $event | Date/Time: $datetime | host info >> $hostname($hostip)"
             log="$file >> Action:$event >> Date:($datetime)"
             # echo $log >> $log_file
@@ -117,4 +117,22 @@
           done
         dest: /usr/local/bin/monitor_etc.sh
         mode: '0755'
+
+    - name: Copy the systemd service unit file
+      template:
+        src: monitor_etc.service.j2
+        dest: /etc/systemd/system/monitor_etc.service
+
+    - name: Reload systemd
+      command: systemctl daemon-reload
+
+    - name: Stop the monitor_etc.service
+      systemd:
+        name: monitor_etc.service
+        state: stopped
+
+    - name: Start the monitor_etc.service
+      systemd:
+        name: monitor_etc.service
+        state: started
 
