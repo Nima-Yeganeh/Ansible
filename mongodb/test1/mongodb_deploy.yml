@@ -87,7 +87,7 @@
         dest: /tmp/mongodb-6.0.asc
 
     - name: Import MongoDB GPG key
-      command: sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/mongodb-6.gpg /tmp/mongodb-6.0.asc
+      command: gpg --dearmor -o /etc/apt/trusted.gpg.d/mongodb-6.gpg /tmp/mongodb-6.0.asc
 
     - name: Add MongoDB Repository
       # shell: echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/5.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-5.0.list
