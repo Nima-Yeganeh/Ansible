@@ -136,3 +136,33 @@
         name: monitor_etc.service
         state: started
 
+    - name: Display Message
+      debug:
+        msg: "Monitoring and mail configured | Script path >> /usr/local/bin/monitor_etc.sh | Service running >> monitor_etc.service"
+
+    - name: Pause for 2 seconds
+      pause:
+        seconds: 4
+
+    - name: Testing >> Create the /etc/ztestfile1.txt file
+      file:
+        path: /etc/ztestfile1.txt
+        state: touch
+
+    - name: Testing >> Delete the /etc/ztestfile1.txt file
+      file:
+        path: /etc/ztestfile1.txt
+        state: absent
+
+    - name: Run postqueue -p using shell
+      shell: postqueue -p
+      register: postqueue_output
+
+    - name: Display postqueue output
+      debug:
+        var: postqueue_output.stdout_lines
+
+    - name: Display Message
+      debug:
+        msg: "Test file changes in /etc/ >> check mail command >> sudo postqueue -p & other command >> sudo postcat -q ID"
+
