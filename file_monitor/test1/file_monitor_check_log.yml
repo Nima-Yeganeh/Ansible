@@ -9,6 +9,11 @@
         path: /etc/ztestfile2.txt
         state: touch
 
+    - name: Testing >> Delete the /etc/ztestfile2.txt file
+      file:
+        path: /etc/ztestfile2.txt
+        state: absent
+
     - name: Testing >> Modify the /etc/ztestfile2.txt file
       copy:
         content: |
@@ -16,10 +21,13 @@
           Done!
         dest: /etc/ztestfile2.txt
 
-    - name: Testing >> Delete the /etc/ztestfile2.txt file
-      file:
-        path: /etc/ztestfile2.txt
-        state: absent
+    - name: Testing >> Modify the /etc/ztestfile2.txt file
+      copy:
+        content: |
+          This is a another test!
+          Done!!!
+        dest: /etc/ztestfile2.txt
+        mode: '0755'
 
     - name: Run cat /usr/local/bin/monitor_etc.log using shell
       shell: cat /usr/local/bin/monitor_etc.log
