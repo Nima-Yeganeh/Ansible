@@ -14,19 +14,19 @@
         path: /etc/ztestfile2.txt
         state: absent
 
-    - name: Testing >> Modify the /etc/ztestfile2.txt file
+    - name: Testing >> Modify the /etc/ztestfile3.txt file
       copy:
         content: |
           This is a test!
           Done!
-        dest: /etc/ztestfile2.txt
+        dest: /etc/ztestfile3.txt
 
-    - name: Testing >> Modify the /etc/ztestfile2.txt file
+    - name: Testing >> Modify the /etc/ztestfile3.txt file
       copy:
         content: |
           This is a another test!
           Done!!!
-        dest: /etc/ztestfile2.txt
+        dest: /etc/ztestfile3.txt
         mode: '0755'
 
     - name: Run cat /usr/local/bin/monitor_etc.log using shell
