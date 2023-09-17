@@ -94,7 +94,26 @@
         content: |
           #!/bin/bash
           while true; do
-            inotifywait -r -e modify,create,delete /etc
+            latest_log=$(inotifywait -r -q -e modify,create,delete --format '%w%f %e' /etc)
+            file=$(echo "$latest_log" | cut -d ' ' -f 1)
+            event=$(echo "$latest_log" | cut -d ' ' -f 2)
+            log_file="/usr/local/bin/monitor_etc.log"
+            datetime=$(echo $(date))
+            email="root@domain.local"
+            subject="File changes in /etc folder - Notification"
+            hostname="host1"
+            hostip="192.168.244.170"
+            message="File $file has changed in /etc folder. Action: $event | Date/Time: $datetime | host info >> $hostname($hostip)"
+            log="$file >> Action:$event >> Date:($datetime)"
+            # echo $log >> $log_file
+            sudo printf "%s\n" "$log" >> "$log_file"
+            echo $event
+            echo $file
+            echo $datetime
+            echo $subject
+            echo $message
+            # Send an email using the 'mail' command
+            echo "$message" | mail -s "$subject" $email
           done
         dest: /usr/local/bin/monitor_etc.sh
         mode: '0755'
