@@ -16,25 +16,25 @@
     - name: Allow SSH through UFW
       ansible.builtin.ufw:
         rule: allow
-        port: "22"
+        port: 22
 
     - name: Allow Host1 to connect to port 27017
       ansible.builtin.ufw:
         rule: allow
         from_ip: "{{ hostvars['host1'].ansible_default_ipv4.address }}"
-        port: "27017"
+        port: 27017
 
     - name: Allow Host2 to connect to port 27017
       ansible.builtin.ufw:
         rule: allow
         from_ip: "{{ hostvars['host2'].ansible_default_ipv4.address }}"
-        port: "27017"
+        port: 27017
 
     - name: Allow Host3 to connect to port 27017
       ansible.builtin.ufw:
         rule: allow
         from_ip: "{{ hostvars['host3'].ansible_default_ipv4.address }}"
-        port: "27017"
+        port: 27017
 
     - name: Set the default incoming policy to deny all
       ansible.builtin.ufw:
@@ -49,7 +49,7 @@
         state: reloaded
 
     - name: Get UFW Status
-      ansible.builtin.shell: ufw status numbered
+      ansible.builtin.shell: sudo ufw status numbered
       register: command_result_output
 
     - name: Display UFW Status
