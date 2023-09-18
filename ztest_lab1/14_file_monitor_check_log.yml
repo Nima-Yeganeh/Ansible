@@ -1,0 +1,28 @@
+---
+- name: File Monitor Check Log
+  hosts: servers
+  become: yes
+  
+  tasks: 
+    - name: Testing >> Create the /etc/ztestfile2.txt file
+      file:
+        path: /etc/ztestfile2.txt
+        state: touch
+
+    - name: Testing >> Delete the /etc/ztestfile2.txt file
+      file:
+        path: /etc/ztestfile2.txt
+        state: absent
+
+    - name: Run cat /usr/local/bin/monitor_etc.log using shell
+      shell: cat /usr/local/bin/monitor_etc.log
+      register: monitor_etc_log_output
+
+    - name: Display cat /usr/local/bin/monitor_etc.log output
+      debug:
+        var: monitor_etc_log_output.stdout_lines
+
+    - name: Display Message
+      debug:
+        msg: "The monitor_etc.service constantly checks the status of the /etc folder, and if there are any changes, an email is sent and the change files and the date and status of the changes are logged in the file. You can check /etc monitoring log file using command >> cat /usr/local/bin/monitor_etc.log"
+

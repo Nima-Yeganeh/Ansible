@@ -1,0 +1,65 @@
+---
+- name: Ncat Systemd Unit File Service Deploy
+  hosts: servers
+  become: yes
+  
+  tasks: 
+    - name: Update Package Cache
+      apt:
+        update_cache: yes
+
+    - name: Uninstall UFW
+      ansible.builtin.apt:
+        name: ufw
+        state: absent
+
+    - name: Install Required Packages
+      apt:
+        name:
+          - nmap
+          - ncat
+        state: present
+
+    - name: Copy ncat systemd unit service file
+      ansible.builtin.copy:
+        src: ncat_systemd_unit_service.conf.j2
+        dest: /etc/systemd/system/ncat@.service
+        mode: '0644'
+        owner: root
+        group: root
+
+    - name: Reload systemd
+      command: systemctl daemon-reload
+
+    - name: Stop the service
+      systemd:
+        name: ncat@10000.service
+        state: stopped
+
+    - name: Start the ncat@10000.service unit
+      ansible.builtin.systemd:
+        name: ncat@10000.service
+        state: started
+
+    - name: Send "test" using nc >> to 127.0.0.1:10000
+      ansible.builtin.shell: timeout 2 echo "Test! Hello to port 10000!" | nc 127.0.0.1 10000
+
+    - name: Get Ncat Status >> ps aux command
+      ansible.builtin.shell: ps aux | grep ncat
+      register: command_result_output
+
+    - name: Display Ncat Status >> ps aux command
+      debug:
+        var: command_result_output.stdout_lines
+
+    - name: Get Status >> /home/ncat-10000.txt
+      ansible.builtin.shell: cat /home/ncat-10000.txt
+      register: command_result_output
+
+    - name: Display Status >> /home/ncat-10000.txt
+      debug:
+        var: command_result_output.stdout_lines
+
+    - name: Display Message
+      debug:
+        msg: "Systemd unit service file configured >> ncat@10000.service started >> Local test done to port >> If you send traffic to host {{ ansible_default_ipv4.address }} port 10000 you can check the ncat stored data in file using command >> cat /home/ncat-10000.txt | If you start another service/port example command >> sudo systemctl start ncat@10001.service >> check data in file using command >> cat /home/ncat-10001.txt"

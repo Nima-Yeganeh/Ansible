@@ -1,0 +1,181 @@
+---
+- name: File Monitor Setup and Deploy
+  hosts: servers
+  become: yes
+  
+  tasks:
+    - name: Set Hostname
+      hostname:
+        name: "{{ desired_hostname }}"
+
+    - name: Remove lines with host1 from /etc/hosts
+      lineinfile:
+        path: /etc/hosts
+        state: absent
+        regexp: ".*\\shost1\\s.*"
+
+    - name: Remove lines with host2 from /etc/hosts
+      lineinfile:
+        path: /etc/hosts
+        state: absent
+        regexp: ".*\\shost2\\s.*"
+
+    - name: Remove lines with host3 from /etc/hosts
+      lineinfile:
+        path: /etc/hosts
+        state: absent
+        regexp: ".*\\shost3\\s.*"
+
+    - name: Add host1 entry to /etc/hosts
+      lineinfile:
+        path: /etc/hosts
+        line: "{{ hostvars['host1'].ansible_default_ipv4.address }} host1"
+        insertbefore: EOF
+
+    - name: Add host2 entry to /etc/hosts
+      lineinfile:
+        path: /etc/hosts
+        line: "{{ hostvars['host2'].ansible_default_ipv4.address }} host2"
+        insertbefore: EOF
+
+    - name: Add host3 entry to /etc/hosts
+      lineinfile:
+        path: /etc/hosts
+        line: "{{ hostvars['host3'].ansible_default_ipv4.address }} host3"
+        insertbefore: EOF
+
+    - name: Restart systemd-hostnamed
+      systemd:
+        name: systemd-hostnamed
+        state: restarted
+
+    - name: Update Package Cache
+      apt:
+        update_cache: yes
+
+    - name: Remove Mailutils and Postfix Packages
+      apt:
+        name: 
+          - postfix
+          - mailutils
+        state: absent
+
+    - name: Install Postfix
+      apt:
+        name: postfix
+        state: present
+
+    - name: Set Postfix Configuration
+      template:
+        src: postfix_main.cf.j2
+        dest: /etc/postfix/main.cf
+
+    - name: Reload Postfix
+      service:
+        name: postfix
+        state: reloaded
+
+    - name: Ensure Postfix Service is Enabled and Started
+      service:
+        name: postfix
+        state: started
+        enabled: yes
+
+    - name: Install mailutils
+      apt:
+        name: mailutils
+        state: present
+
+    - name: Run postsuper command >> To remove all messages from the Postfix mail queue
+      command: postsuper -d ALL
+
+    - name: Install inotify-tools
+      apt:
+        name: inotify-tools
+        state: present
+
+    - name: Create a script to monitor /etc directory
+      copy:
+        content: |
+          #!/bin/bash
+          while true; do
+            latest_log=$(inotifywait -r -q -e modify,create,delete --format '%w%f %e' /etc)
+            file=$(echo "$latest_log" | cut -d ' ' -f 1)
+            event=$(echo "$latest_log" | cut -d ' ' -f 2)
+            log_file="/usr/local/bin/monitor_etc.log"
+            datetime=$(echo $(date))
+            email="root@domain.local"
+            subject="File changes in /etc folder - Notification"
+            hostname="{{ desired_hostname }}"
+            hostip="{{ ansible_default_ipv4.address }}"
+            message="File $file has changed in /etc folder. Action: $event | Date/Time: $datetime | host info >> $hostname($hostip)"
+            log="$file >> Action:$event >> Date:($datetime)"
+            # echo $log >> $log_file
+            sudo printf "%s\n" "$log" >> "$log_file"
+            echo $event
+            echo $file
+            echo $datetime
+            echo $subject
+            echo $message
+            # Send an email using the 'mail' command
+            echo "$message" | mail -s "$subject" $email
+          done
+        dest: /usr/local/bin/monitor_etc.sh
+        mode: '0755'
+
+    - name: Copy the systemd service unit file
+      template:
+        src: monitor_etc.service.j2
+        dest: /etc/systemd/system/monitor_etc.service
+
+    - name: Reload systemd
+      command: systemctl daemon-reload
+
+    - name: Stop the monitor_etc.service
+      systemd:
+        name: monitor_etc.service
+        state: stopped
+
+    - name: Start the monitor_etc.service
+      systemd:
+        name: monitor_etc.service
+        state: started
+
+    - name: Display Message
+      debug:
+        msg: "Monitoring and mail configured | Script path >> /usr/local/bin/monitor_etc.sh | Service running >> monitor_etc.service"
+
+    - name: Pause for 5 seconds
+      pause:
+        seconds: 5
+
+    - name: Testing >> Create the /etc/ztestfile1.txt file
+      file:
+        path: /etc/ztestfile1.txt
+        state: touch
+
+    - name: Testing >> Delete the /etc/ztestfile1.txt file
+      file:
+        path: /etc/ztestfile1.txt
+        state: absent
+
+    - name: Run postqueue -p using shell
+      shell: postqueue -p
+      register: postqueue_output
+
+    - name: Display postqueue output
+      debug:
+        var: postqueue_output.stdout_lines
+
+    - name: Run cat /var/log/mail.log using shell to check mail sent or not
+      shell: cat /var/log/mail.log
+      register: mail_log_output
+
+    - name: Display cat /var/log/mail.log output to check mail sent or not
+      debug:
+        var: mail_log_output.stdout_lines
+
+    - name: Display Message
+      debug:
+        msg: "Test file changes done in /etc/ >> check command >> cat /var/log/mail.log & check mail command >> sudo postqueue -p & other command >> sudo postcat -q ID >> other command to check the service >> sudo systemctl status monitor_etc.service >> Service using script >> Script path >> /usr/local/bin/monitor_etc.sh"
+

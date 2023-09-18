@@ -1,0 +1,123 @@
+---
+- name: Deploy Consul On Multiple Hosts
+  hosts: servers
+  become: yes
+
+  tasks:
+    - name: Set Hostname
+      hostname:
+        name: "{{ desired_hostname }}"
+
+    - name: Remove lines with host1 from /etc/hosts
+      lineinfile:
+        path: /etc/hosts
+        state: absent
+        regexp: ".*\\shost1\\s.*"
+
+    - name: Remove lines with host2 from /etc/hosts
+      lineinfile:
+        path: /etc/hosts
+        state: absent
+        regexp: ".*\\shost2\\s.*"
+
+    - name: Remove lines with host3 from /etc/hosts
+      lineinfile:
+        path: /etc/hosts
+        state: absent
+        regexp: ".*\\shost3\\s.*"
+
+    - name: Add host1 entry to /etc/hosts
+      lineinfile:
+        path: /etc/hosts
+        line: "{{ hostvars['host1'].ansible_default_ipv4.address }} host1"
+        insertbefore: EOF
+
+    - name: Add host2 entry to /etc/hosts
+      lineinfile:
+        path: /etc/hosts
+        line: "{{ hostvars['host2'].ansible_default_ipv4.address }} host2"
+        insertbefore: EOF
+
+    - name: Add host3 entry to /etc/hosts
+      lineinfile:
+        path: /etc/hosts
+        line: "{{ hostvars['host3'].ansible_default_ipv4.address }} host3"
+        insertbefore: EOF
+
+    - name: Restart systemd-hostnamed
+      systemd:
+        name: systemd-hostnamed
+        state: restarted
+
+    - name: Update Package Cache
+      apt:
+        update_cache: yes
+
+    - name: Install Required Packages
+      apt:
+        name:
+          - unzip
+          - curl
+        state: present
+
+    - name: Download Consul
+      get_url:
+        # url: "https://releases.hashicorp.com/consul/1.11.0/consul_1.11.0_linux_amd64.zip"
+        url: "https://releases.hashicorp.com/consul/1.16.1/consul_1.16.1_linux_amd64.zip"
+        dest: /tmp/consul.zip
+
+    - name: Extract Consul
+      unarchive:
+        src: /tmp/consul.zip
+        dest: /usr/local/bin
+        remote_src: yes
+
+    - name: Create Consul Group
+      group:
+        name: consul
+        state: present
+
+    - name: Create Consul User
+      user:
+        name: consul
+        group: consul
+        shell: /sbin/nologin
+        system: yes
+        state: present
+
+    - name: Debug
+      debug:
+        msg: "Debugging information"
+
+    - name: Create Consul Data Directory
+      file:
+        path: /opt/consul/data
+        state: directory
+        owner: consul
+        group: consul
+
+    - name: Create Consul configuration directory
+      file:
+        path: /etc/consul.d
+        state: directory
+
+    - name: Create Consul Service Configuration
+      template:
+        src: consul.hcl.j2
+        dest: /etc/consul.d/consul.hcl
+
+    - name: Copy consul.service File
+      copy:
+        src: consul.service
+        dest: /etc/systemd/system/consul.service
+
+    - name: Create Consul Systemd Service
+      systemd:
+        name: consul
+        enabled: yes
+        state: started
+
+    - name: Restart Consul Service
+      systemd:
+        name: consul
+        state: restarted

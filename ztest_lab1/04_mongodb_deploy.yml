@@ -1,0 +1,142 @@
+---
+- name: Setup MongoDB Cluster
+  hosts: servers
+  become: yes
+  
+  vars:
+    mongodb_version: "6.0"
+    mongodb_data_dir: "/var/lib/mongodb"
+    mongodb_log_dir: "/var/log/mongodb"
+    mongodb_bind_ip: "0.0.0.0"
+    mongodb_port: 27017
+    mongodb_replica_set_name: "myreplica"
+
+  tasks:
+    - name: Set Hostname
+      hostname:
+        name: "{{ desired_hostname }}"
+
+    - name: Remove lines with host1 from /etc/hosts
+      lineinfile:
+        path: /etc/hosts
+        state: absent
+        regexp: ".*\\shost1\\s.*"
+
+    - name: Remove lines with host2 from /etc/hosts
+      lineinfile:
+        path: /etc/hosts
+        state: absent
+        regexp: ".*\\shost2\\s.*"
+
+    - name: Remove lines with host3 from /etc/hosts
+      lineinfile:
+        path: /etc/hosts
+        state: absent
+        regexp: ".*\\shost3\\s.*"
+
+    - name: Add host1 entry to /etc/hosts
+      lineinfile:
+        path: /etc/hosts
+        line: "{{ hostvars['host1'].ansible_default_ipv4.address }} host1"
+        insertbefore: EOF
+
+    - name: Add host2 entry to /etc/hosts
+      lineinfile:
+        path: /etc/hosts
+        line: "{{ hostvars['host2'].ansible_default_ipv4.address }} host2"
+        insertbefore: EOF
+
+    - name: Add host3 entry to /etc/hosts
+      lineinfile:
+        path: /etc/hosts
+        line: "{{ hostvars['host3'].ansible_default_ipv4.address }} host3"
+        insertbefore: EOF
+
+    - name: Restart systemd-hostnamed
+      systemd:
+        name: systemd-hostnamed
+        state: restarted
+
+    - name: Update Package Cache
+      apt:
+        update_cache: yes
+
+    - name: Install Required Packages
+      apt:
+        name:
+          - unzip
+          - curl
+          - wget
+          - gnupg2
+          - software-properties-common
+          - apt-transport-https
+          - ca-certificates
+          - lsb-release
+        state: present
+
+    - name: Remove the MongoDB GPG key file
+      file:
+        path: /etc/apt/trusted.gpg.d/mongodb-6.gpg
+        state: absent
+
+    - name: Download MongoDB GPG key
+      get_url:
+        url: https://www.mongodb.org/static/pgp/server-6.0.asc
+        dest: /tmp/mongodb-6.0.asc
+
+    - name: Import MongoDB GPG key
+      command: gpg --dearmor -o /etc/apt/trusted.gpg.d/mongodb-6.gpg /tmp/mongodb-6.0.asc
+
+    - name: Add MongoDB Repository
+      shell: echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu $(lsb_release -cs)/mongodb-org/6.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list
+
+    - name: Update APT Package Cache
+      apt:
+        update_cache: yes
+
+    - name: Install MongoDB
+      apt:
+        name: mongodb-org
+        state: present
+        update_cache: yes
+
+    - name: Start MongoDB Service
+      service:
+        name: mongod
+        state: started
+        enabled: yes
+
+    - name: Run MongoDB Version Command
+      command: mongod --version
+      register: mongod_version_output
+
+    - name: Display MongoDB Version
+      debug:
+        var: mongod_version_output.stdout_lines
+
+    - name: Configure MongoDB
+      template:
+        src: mongodb.conf.j2
+        dest: /etc/mongod.conf
+
+    - name: Restart MongoDB Service
+      service:
+        name: mongod
+        state: restarted
+
+    - name: Copy MongoDB Deploy Config Script
+      template:
+        src: mongodb.deploy.conf.j2
+        dest: /etc/mongodb.deploy.conf.sh
+
+    - name: Initialize MongoDB Replica Set
+      ansible.builtin.shell: bash /etc/mongodb.deploy.conf.sh
+      register: command_result
+      ignore_errors: yes
+      when: inventory_hostname == 'host1'
+
+    - name: Display the command's output
+      debug:
+        msg: "Command output: {{ command_result.stdout }}"
+      when: not command_result.failed
+

@@ -1,0 +1,13 @@
+---
+- name: Check Consul Info
+  hosts: servers
+  # become: yes
+
+  tasks:
+    - name: Get Consul Info
+      command: consul info | head -n42
+      register: consul_info_output
+
+    - name: Display Consul Info
+      debug:
+        var: consul_info_output.stdout_lines

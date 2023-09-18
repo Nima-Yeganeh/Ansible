@@ -1,0 +1,9 @@
+[Unit]
+Description=Monitor /etc directory
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/monitor_etc.sh
+
+[Install]
+WantedBy=multi-user.target
