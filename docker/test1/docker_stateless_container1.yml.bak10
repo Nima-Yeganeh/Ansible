@@ -16,6 +16,11 @@
         state: absent
       loop: "{{ docker_container_ids.stdout_lines }}"
 
+    - name: Stop UFW service
+      ansible.builtin.service:
+        name: ufw
+        state: stopped
+
     - name: Uninstall UFW
       ansible.builtin.apt:
         name: ufw

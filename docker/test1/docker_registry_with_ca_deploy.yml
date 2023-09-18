@@ -102,7 +102,7 @@
       debug:
         var: docker_ps_result.stdout_lines
 
-    - name: Pause for 2 seconds
+    - name: Pause for 5 seconds
       pause:
         seconds: 5
 
@@ -115,7 +115,7 @@
       debug:
         var: docker_login_result.stdout_lines
 
-    - name: Pause for 2 seconds
+    - name: Pause for 5 seconds
       pause:
         seconds: 5
 
@@ -136,7 +136,7 @@
       debug:
         var: docker_images_result.stdout_lines
 
-    - name: Pause for 2 seconds
+    - name: Pause for 5 seconds
       pause:
         seconds: 5
 
@@ -175,7 +175,7 @@
       debug:
         var: docker_login_result.stdout_lines
 
-    - name: Pause for 2 seconds
+    - name: Pause for 5 seconds
       pause:
         seconds: 5
 
