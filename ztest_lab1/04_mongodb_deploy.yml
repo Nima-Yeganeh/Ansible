@@ -138,5 +138,4 @@
     - name: Display the command's output
       debug:
         msg: "Command output: {{ command_result.stdout }}"
-      when: not command_result.failed
-
+      when: inventory_hostname == 'host1'
