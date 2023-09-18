@@ -39,6 +39,18 @@
         dest: /home/website2/index.php
         mode: '0644'
 
+    - name: Run MySQL Database Docker Container >> Host3 Task
+      docker_container:
+        name: mysql-container
+        image: mysql:latest
+        detach: yes
+        env:
+          MYSQL_ROOT_PASSWORD: my-secret-password
+        ports:
+          - "3306:3306"
+        command: "--bind-address=0.0.0.0"
+      when: inventory_hostname == 'host3'
+
     - name: Build Custom Docker Image >> my-web2-php:7.4-apache >> Host1 & Host2 Task
       command: docker build -t my-web2-php:7.4-apache /home/website2
       when: inventory_hostname == 'host1' or inventory_hostname == 'host2'
@@ -51,18 +63,6 @@
           - "8080:80"
         detach: yes
       when: inventory_hostname == 'host1' or inventory_hostname == 'host2'
-
-    - name: Run MySQL Database Docker Container >> Host3 Task
-      docker_container:
-        name: mysql-container
-        image: mysql:latest
-        detach: yes
-        env:
-          MYSQL_ROOT_PASSWORD: my-secret-password
-        ports:
-          - "3306:3306"
-        command: "--bind-address=0.0.0.0"
-      when: inventory_hostname == 'host3'
 
     - name: Update Package Cache >> Host3 Task
       apt:
