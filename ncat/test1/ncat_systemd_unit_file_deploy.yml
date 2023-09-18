@@ -59,3 +59,8 @@
     - name: Display Status >> /home/ncat.txt
       debug:
         var: command_result_output.stdout_lines
+
+    - name: Display Message
+      debug:
+        msg: "Systemd unit service file configured >> ncat@10000.service started >> Local test done to port >> If you send traffic to host {{ ansible_default_ipv4.address }} port 10000 you can check the ncat stored data in file using command >> cat /home/ncat.txt"
+
