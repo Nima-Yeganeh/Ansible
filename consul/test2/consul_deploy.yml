@@ -44,6 +44,11 @@
         line: "{{ hostvars['host3'].ansible_default_ipv4.address }} host3"
         insertbefore: EOF
 
+    - name: Restart systemd-hostnamed
+      systemd:
+        name: systemd-hostnamed
+        state: restarted
+
     - name: Update Package Cache
       apt:
         update_cache: yes

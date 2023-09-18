@@ -38,16 +38,8 @@
     - name: Install Docker GPG Key
       command: gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg /tmp/docker-archive-keyring.gpg
 
-    # - name: Add Docker GPG Key
-    #   shell: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-
     - name: Add Docker Repository
       shell: echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-
-    # - name: Add Docker APT Repository
-    #   apt_repository:
-    #     repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-    #     state: present
 
     - name: Update Package Cache
       apt:

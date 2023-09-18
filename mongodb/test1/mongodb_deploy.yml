@@ -52,6 +52,11 @@
         line: "{{ hostvars['host3'].ansible_default_ipv4.address }} host3"
         insertbefore: EOF
 
+    - name: Restart systemd-hostnamed
+      systemd:
+        name: systemd-hostnamed
+        state: restarted
+
     - name: Update Package Cache
       apt:
         update_cache: yes
@@ -69,17 +74,10 @@
           - lsb-release
         state: present
 
-    # - name: Run the rm command to delete the MongoDB GPG key
-    #   command: rm -f /etc/apt/trusted.gpg.d/mongodb-6.gpg
-
     - name: Remove the MongoDB GPG key file
       file:
         path: /etc/apt/trusted.gpg.d/mongodb-6.gpg
         state: absent
-
-    # - name: Download MongoDB GPG Key
-      # shell: wget -qO - https://www.mongodb.org/static/pgp/server-5.0.asc | sudo apt-key add -
-      # ansible.builtin.shell: curl -fsSL https://www.mongodb.org/static/pgp/server-6.0.asc|sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/mongodb-6.gpg
 
     - name: Download MongoDB GPG key
       get_url:
@@ -90,7 +88,6 @@
       command: gpg --dearmor -o /etc/apt/trusted.gpg.d/mongodb-6.gpg /tmp/mongodb-6.0.asc
 
     - name: Add MongoDB Repository
-      # shell: echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/5.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-5.0.list
       shell: echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu $(lsb_release -cs)/mongodb-org/6.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list
 
     - name: Update APT Package Cache
@@ -102,8 +99,6 @@
         name: mongodb-org
         state: present
         update_cache: yes
-      # vars:
-        # mongodb_version: "{{ mongodb_version }}"
 
     - name: Start MongoDB Service
       service:
