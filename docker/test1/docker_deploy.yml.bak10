@@ -29,17 +29,9 @@
         - gnupg
         - lsb-release
         - gpg
-
-    - name: Download Docker GPG Key
-      get_url:
-        url: https://download.docker.com/linux/ubuntu/gpg
-        dest: /tmp/docker-archive-keyring.gpg
-
-    - name: Install Docker GPG Key
-      command: gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg /tmp/docker-archive-keyring.gpg
-
-    # - name: Add Docker GPG Key
-    #   shell: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+    
+    - name: Add Docker GPG Key
+      shell: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
 
     - name: Add Docker Repository
       shell: echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
@@ -73,7 +65,7 @@
         state: started
 
     - name: Run hello-world Docker container for test
-      ansible.builtin.command: docker run hello-world
+      ansible.builtin.command: sudo docker run hello-world
   
     - name: Get Docker Status
       ansible.builtin.shell: docker ps -a
