@@ -104,7 +104,7 @@
 
     - name: Pause for 2 seconds
       pause:
-        seconds: 2
+        seconds: 5
 
     - name: Run Docker Login
       shell: docker login -uusername -ppassword localhost:5000
@@ -117,7 +117,7 @@
 
     - name: Pause for 2 seconds
       pause:
-        seconds: 2
+        seconds: 5
 
     - name: Pull hello-world Docker Image for Test
       shell: docker image pull hello-world
@@ -138,7 +138,7 @@
 
     - name: Pause for 2 seconds
       pause:
-        seconds: 2
+        seconds: 5
 
     - name: Fetch domain.crt from servers
       fetch:
@@ -177,7 +177,7 @@
 
     - name: Pause for 2 seconds
       pause:
-        seconds: 2
+        seconds: 5
 
     - name: Pull Test >> Docker image >> from Host1 Repository >> hello-world
       shell: docker pull {{ hostvars['host1'].ansible_default_ipv4.address }}:5000/hello-world
@@ -189,4 +189,8 @@
     - name: Display Docker images Result
       debug:
         var: docker_images_result.stdout_lines
+
+    - name: Display Message
+      debug:
+        msg: "Docker registry with CA deployed on host. Local and remote docker login, push, and pull tests done. Repository info to login and host url >> https://{{ ansible_default_ipv4.address }}:5000/v2/_catalog >> user=username pass=password"
 
