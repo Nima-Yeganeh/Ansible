@@ -82,7 +82,7 @@
         state: present
 
     - name: Run postsuper command >> To remove all messages from the Postfix mail queue
-      command: postsuper -d ALL
+      command: sudo postsuper -d ALL
 
     - name: Install inotify-tools
       apt:
@@ -140,7 +140,7 @@
       debug:
         msg: "Monitoring and mail configured | Script path >> /usr/local/bin/monitor_etc.sh | Service running >> monitor_etc.service"
 
-    - name: Pause for 5 seconds
+    - name: Pause for 2 seconds
       pause:
         seconds: 5
 
