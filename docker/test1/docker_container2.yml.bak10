@@ -16,6 +16,11 @@
         state: absent
       loop: "{{ docker_container_ids.stdout_lines }}"
 
+    - name: Stop UFW service
+      ansible.builtin.service:
+        name: ufw
+        state: stopped
+
     - name: Uninstall UFW
       ansible.builtin.apt:
         name: ufw
@@ -85,7 +90,7 @@
       when: inventory_hostname == 'host3'
 
     - name: Execute Shell Script >> Host3 Task
-      shell: bash /home/website2/script.sh
+      shell: sudo bash /home/website2/script.sh
       when: inventory_hostname == 'host3'
 
     - name: Delete temp folder /home/website2/
