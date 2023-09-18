@@ -52,15 +52,14 @@
       debug:
         var: command_result_output.stdout_lines
 
-    - name: Get Status >> /home/ncat.txt
-      ansible.builtin.shell: cat /home/ncat.txt
+    - name: Get Status >> /home/ncat-10000.txt
+      ansible.builtin.shell: cat /home/ncat-10000.txt
       register: command_result_output
 
-    - name: Display Status >> /home/ncat.txt
+    - name: Display Status >> /home/ncat-10000.txt
       debug:
         var: command_result_output.stdout_lines
 
     - name: Display Message
       debug:
-        msg: "Systemd unit service file configured >> ncat@10000.service started >> Local test done to port >> If you send traffic to host {{ ansible_default_ipv4.address }} port 10000 you can check the ncat stored data in file using command >> cat /home/ncat.txt"
-
+        msg: "Systemd unit service file configured >> ncat@10000.service started >> Local test done to port >> If you send traffic to host {{ ansible_default_ipv4.address }} port 10000 you can check the ncat stored data in file using command >> cat /home/ncat-10000.txt | If you start another service/port example command >> sudo systemctl start ncat@10001.service >> check data in file using command >> cat /home/ncat-10001.txt"
