@@ -8,6 +8,11 @@
       apt:
         update_cache: yes
 
+    - name: Stop UFW service
+      ansible.builtin.service:
+        name: ufw
+        state: stopped
+
     - name: Uninstall UFW
       ansible.builtin.apt:
         name: ufw
