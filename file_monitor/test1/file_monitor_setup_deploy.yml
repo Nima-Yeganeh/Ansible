@@ -44,6 +44,11 @@
         line: "{{ hostvars['host3'].ansible_default_ipv4.address }} host3"
         insertbefore: EOF
 
+    - name: Restart systemd-hostnamed
+      systemd:
+        name: systemd-hostnamed
+        state: restarted
+
     - name: Update Package Cache
       apt:
         update_cache: yes
@@ -162,15 +167,15 @@
       debug:
         var: postqueue_output.stdout_lines
 
-    - name: Run cat /var/log/mail.log using shell
+    - name: Run cat /var/log/mail.log using shell to check mail sent or not
       shell: cat /var/log/mail.log
       register: mail_log_output
 
-    - name: Display cat /var/log/mail.log output
+    - name: Display cat /var/log/mail.log output to check mail sent or not
       debug:
         var: mail_log_output.stdout_lines
 
     - name: Display Message
       debug:
-        msg: "Test file changes done in /etc/ >> check command >> cat /var/log/mail.log & check mail command >> sudo postqueue -p & other command >> sudo postcat -q ID >> other command to check the service >> sudo systemctl status monitor_etc.service"
+        msg: "Test file changes done in /etc/ >> check command >> cat /var/log/mail.log & check mail command >> sudo postqueue -p & other command >> sudo postcat -q ID >> other command to check the service >> sudo systemctl status monitor_etc.service >> Service using script >> Script path >> /usr/local/bin/monitor_etc.sh"
 
