@@ -21,17 +21,14 @@
         path: /home/backup
         state: directory
 
-    - name: Type 1 Backup - Run mongodump backup in folder > /home/backup
-      ansible.builtin.shell: mongodump --out /home/backup
+    - name: Copy Script File >> /home/mongodb_backup_bash_script.sh
+      template:
+        src: mongodb_backup_bash_script_conf.j2
+        dest: /home/mongodb_backup_bash_script.sh
+        mode: '0644'
 
-    - name: Type 2 Backup - Run mongodump backup archive file > /home/db.archive
-      ansible.builtin.shell: mongodump --host=localhost --port=27017 --archive=/home/db.archive
-
-    - name: Type 3 Backup - Run mongodump backup gzip archive file > /home/db.archive.gzip
-      ansible.builtin.shell: mongodump --host=localhost --port=27017 --archive=/home/db.archive.gzip --gzip
-
-    - name: Type 4 Backup - Run mongodump backup tar file > /home/backup.tar.gz
-      ansible.builtin.shell: mongodump --out /home/backup && tar czvf /home/backup.tar.gz /home/backup
+    - name: Execute Shell Script >> /home/mongodb_backup_bash_script.sh
+      shell: bash /home/mongodb_backup_bash_script.sh
 
     - name: Get MongoDB Backup Folder Status > /home
       ansible.builtin.shell: ls -anp /home/
@@ -40,3 +37,7 @@
     - name: Display MongoDB Backup Status
       debug:
         var: command_result_output.stdout_lines
+
+    - name: Display Message
+      debug:
+        msg: "Mongodb host: {{ ansible_default_ipv4.address }} >> Backup path: /home/ >> Backup script >> /home/mongodb_backup_bash_script.sh"

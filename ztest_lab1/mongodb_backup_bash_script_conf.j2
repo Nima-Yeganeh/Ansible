@@ -1,0 +1,11 @@
+# Type 1 Backup - Run mongodump backup in folder > /home/backup
+mongodump --out /home/backup
+
+# Type 2 Backup - Run mongodump backup archive file > /home/db.archive
+mongodump --host=localhost --port=27017 --archive=/home/db.archive
+
+# Type 3 Backup - Run mongodump backup gzip archive file > /home/db.archive.gzip
+mongodump --host=localhost --port=27017 --archive=/home/db.archive.gzip --gzip
+
+# Type 4 Backup - Run mongodump backup tar file > /home/backup.tar.gz
+mongodump --out /home/backup && tar czvf /home/backup.tar.gz /home/backup
